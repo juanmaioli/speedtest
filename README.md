@@ -25,12 +25,12 @@ Es un sistema que te permite llevar un control y estadísticas de la velocidad d
 ```
 [Más info: www.speedtest.net](www.speedtest.net/es/apps/cli)
 
-## 2 - Clonar el repocitorio en el directorio de tu web server con php (Ej. /var/www)
+## 2 - Clonar el repositorio en el directorio correspondiente de tu web server con php 7.4 (Ej. /var/www)
 ```bash
-git clone
+git clone git@github.com:juanmaioli/speedtest.git
 ```
 
-## 2 - Crear una db en Mysql y Crear la tabla speedtest
+## 3 - Crear una db en Mysql y Crear la tabla speedtest
 ```sql
 CREATE TABLE `speedtest` (
   `st_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -43,7 +43,7 @@ CREATE TABLE `speedtest` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 ```
 
-## 2.1 - Crear la tabla ips
+## 3.1 - Crear la tabla ips
 ```sql
 CREATE TABLE `ips` (
   `ip_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -55,7 +55,7 @@ CREATE TABLE `ips` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 ```
 
-## 2.2 - Editar config_example.php y renombrar a config.php
+## 3.2 - Editar config_example.php y renombrar a config.php
 ```php
 <?php
   $db_server      = "localhost";// Db Servidor
@@ -66,7 +66,7 @@ CREATE TABLE `ips` (
 ?>
 ```
 
-## 3 - Crear client.py en el home del usuario
+## 4 - Crear client.py en el home del usuario
 ```bash
   nano client.py
 ```
@@ -97,7 +97,7 @@ rta = response.read().decode()
 print(rta)
 ```
 
-## 4 - Crear speedtest.sh en el home del usuario
+## 5 - Crear speedtest.sh en el home del usuario
 ```bash
   nano speedtest.sh
 ```
@@ -108,7 +108,7 @@ print(rta)
  /usr/bin/python3 /home/usuario/client.py
 ```
 
-## 5 - Crear una tarea en cron
+## 6 - Crear una tarea en cron
 ```bash
   crontab -e
   # Agregar la linea para ejecutar la tarea en el minuto 30 cada hora.
