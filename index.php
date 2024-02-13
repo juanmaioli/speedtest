@@ -68,7 +68,7 @@ $result = $conn->query($sql);
 if (mysqli_num_rows($result) == true) {
   while ($row = $result->fetch_assoc()) {
     $total = $row["total"];
-    // if($total==0){header("Location: block.php");}
+    if($total==0){header("Location: block.php");}
   }
 } else {
   $last_report = "S/Rep";
