@@ -20,4 +20,3 @@ headers = response.getheaders()
 content_type = response.getheader('Content-Type')
 rta = response.read().decode()
 print(rta)
-

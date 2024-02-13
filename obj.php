@@ -20,22 +20,42 @@ $st_year = date("Y");
 
 function mesMostrar()
 {
-  $meses = array(
-    1 => "Enero",
-    2 => "Febrero",
-    3 => "Marzo",
-    4 => "Abril",
-    5 => "Mayo",
-    6 => "Junio",
-    7 => "Julio",
-    8 => "Agosto",
-    9 => "Septiembre",
-    10 => "Octubre",
-    11 => "Noviembre",
-    12 => "Diciembre"
-  );
-
-  $mesMostrar = $meses[date("m")];
+  if (date("m") == 1) {
+    $mesMostrar = "Enero";
+  }
+  if (date("m") == 2) {
+    $mesMostrar = "Febrero";
+  }
+  if (date("m") == 3) {
+    $mesMostrar = "Marzo";
+  }
+  if (date("m") == 4) {
+    $mesMostrar = "Abril";
+  }
+  if (date("m") == 5) {
+    $mesMostrar = "Mayo";
+  }
+  if (date("m") == 6) {
+    $mesMostrar = "Junio";
+  }
+  if (date("m") == 7) {
+    $mesMostrar = "Julio";
+  }
+  if (date("m") == 8) {
+    $mesMostrar = "Agosto";
+  }
+  if (date("m") == 9) {
+    $mesMostrar = "Septiembre";
+  }
+  if (date("m") == 10) {
+    $mesMostrar = "Octubre";
+  }
+  if (date("m") == 11) {
+    $mesMostrar = "Noviembre";
+  }
+  if (date("m") == 12) {
+    $mesMostrar = "Diciembre";
+  }
   return $mesMostrar;
 }
 $mesGraph = mesMostrar($st_year);
@@ -47,9 +67,7 @@ $result = $conn->query($sql);
 if (mysqli_num_rows($result) == true) {
   while ($row = $result->fetch_assoc()) {
     $total = $row["total"];
-    if ($total == 0) {
-      header("Location: block.php");
-    }
+    // if($total==0){header("Location: block.php");}
   }
 } else {
   $last_report = "S/Rep";
@@ -149,39 +167,89 @@ if (mysqli_num_rows($result) == true) {
   $filas_anio = "['" . $st_now . "',0,0,0],";
 }
 $conn->close();
+include("header.php");
 ?>
+  <div class="container-fluid">
+    <div class="row mt-2">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <div class="card shadow-night-sm">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-md-1 text-center"><a href="index.php" class="btn btn-success"><i class="fa-regular fa-home fa-fw fa-lg"></i></a></div>
+              <div class="col-md-7">
+                <h2 class='text-success'><img src="images/speedometer.svg" class="" width="50px" /> Speed Test de <span class="text-primary"><?= $ip_name ?></span></h2>
+                <span class="text-primary">(Su IP: <?= $ip_client ?>)</span>
+              </div>
+              <div class="col-md-2 text-end"><label class="">Cambiar a Estadísticas de la IP: </label></div>
+              <div class="col-md-2 text-end">
+                <form action='obj.php' method='post'><?= $st_ip_list ?></form>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <h2 class='text-primary'>Último Reporte: <?= $last_report ?></h2>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-4">
+                <div id="chart_div_ping" class="border p-3 shadow-purple-md rounded" align='center'></div>
+              </div>
+              <div class="col-md-4">
+                <div id="chart_div_down" class="border p-3 shadow-darkblue-md rounded" align='center'></div>
+              </div>
+              <div class="col-md-4">
+                <div id="chart_div_up" class="border p-3 shadow-orange-md rounded" align='center'></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
 
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <title id='titulo'>PikApp <?= $ip_client ?></title>
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="css/bootstrap.min.css?version=5.1.0">
-  <!-- Favicon for this template -->
-  <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-  <link rel="manifest" href="images/manifest.json">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
-  <meta name="theme-color" content="#ffffff">
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <div class="row mt-3">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <div class="card shadow-night-sm">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div id="line_top_x" class="border p-3 shadow-darkmagenta-md rounded"></div>
+              </div>
+              <div class="col-md-6">
+                <div id="line_top_x_mes" class="border p-3 shadow-darkmagenta-md rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <div class="card shadow-night-sm">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div id="line_top_x_anio" class="border p-3 shadow-darkmagenta-md rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-1"></div>
+      <div class="col-md-10 m-1 text-center"><a href="del.php?id=<?= $ip_test ?>" class="btn btn-danger"><i class="fa-regular fa-trash-can fa-fw"></i> Borrar Estadísticas de <?= $ip_test ?></a></div>
+      <div class="col-md-1"></div>
+    </div>
+  </div>
+  <br><br><br>
   <script type="text/javascript">
     google.charts.load('current', {
       'packages': ['line']
@@ -189,13 +257,13 @@ $conn->close();
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
-      var data = new google.visualization.DataTable();
+      let data = new google.visualization.DataTable();
       data.addColumn('string', 'Hora');
       data.addColumn('number', 'Ping ms');
       data.addColumn('number', 'Download Mbit/s');
       data.addColumn('number', 'Upload Mbit/s');
       data.addRows([<?= $filas ?>]);
-      var options = {
+      let options = {
         chart: {
           title: 'Speed Test Últmas 24hs',
           subtitle: 'Velocidades por hora',
@@ -317,7 +385,7 @@ $conn->close();
         redTo: 10,
         yellowFrom: 10,
         yellowTo: 20,
-        max: 50
+        max: 500
       };
       var chart = new google.visualization.Gauge(document.getElementById('chart_div_down'));
       chart.draw(data, options_down);
@@ -333,98 +401,10 @@ $conn->close();
         redTo: 5,
         yellowFrom: 5,
         yellowTo: 10,
-        max: 25
+        max: 500
       };
       var chart = new google.visualization.Gauge(document.getElementById('chart_div_up'));
       chart.draw(data, options_up);
     }
   </script>
-
-</head>
-
-<body>
-  <div class="container-fluid">
-    <div class="row mt-2">
-      <div class="col-md-1"></div>
-      <div class="col-md-10">
-        <div class="card">
-          <div class="card-header">
-            <div class="row">
-              <div class="col-md-7">
-                <h2 class='text-success'><img src="images/speedometer.svg" class="" width="50px" /> Speed Test de <span class="text-primary"><?= $ip_name ?></span></h2>
-                <span class="text-primary">(Su IP: <?= $ip_client ?>)</span>
-              </div>
-              <div class="col-md-2 text-end"><label class="">Cambiar a Estadísticas de la IP: </label></div>
-              <div class="col-md-2 text-end">
-                <form action='obj.php' method='post'><?= $st_ip_list ?></form>
-              </div>
-              <div class="col-md-1 text-end"><a href="index.php" class="btn btn-success">Inicio</a></div>
-            </div>
-
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-12 text-center">
-                <h2 class='text-primary'>Último Reporte: <?= $last_report ?></h2>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col-md-4">
-                <div id="chart_div_ping" class="border p-3 border-success rounded-lg" align='center'></div>
-              </div>
-              <div class="col-md-4">
-                <div id="chart_div_down" class="border p-3 border-success rounded-lg" align='center'></div>
-              </div>
-              <div class="col-md-4">
-                <div id="chart_div_up" class="border p-3 border-success rounded-lg" align='center'></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-1"></div>
-    </div>
-
-    <div class="row mt-2">
-      <div class="col-md-1"></div>
-      <div class="col-md-10">
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-6">
-                <div id="line_top_x" class="border p-3 border-success rounded-lg"></div>
-              </div>
-              <div class="col-md-6">
-                <div id="line_top_x_mes" class="border p-3 border-success rounded-lg"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-1"></div>
-    </div>
-    <div class="row mt-2">
-      <div class="col-md-1"></div>
-      <div class="col-md-10">
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-12">
-                <div id="line_top_x_anio" class="border p-3 border-success rounded-lg"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-1"></div>
-    </div>
-    <div class="row mt-2">
-      <div class="col-md-1"></div>
-      <div class="col-md-10 m-1 text-center"><a href="del.php?id=<?= $ip_test ?>" class="btn btn-danger">Borrar Estadísticas de <?= $ip_test ?></a></div>
-      <div class="col-md-1"></div>
-    </div>
-  </div>
-  <br><br><br>
-</body>
-
-</html>
+  <?php include("footer.php"); ?>

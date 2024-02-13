@@ -21,22 +21,42 @@ $st_year = date("Y");
 
 function mesMostrar()
 {
-  $meses = array(
-    1 => "Enero",
-    2 => "Febrero",
-    3 => "Marzo",
-    4 => "Abril",
-    5 => "Mayo",
-    6 => "Junio",
-    7 => "Julio",
-    8 => "Agosto",
-    9 => "Septiembre",
-    10 => "Octubre",
-    11 => "Noviembre",
-    12 => "Diciembre"
-  );
-
-  $mesMostrar = $meses[date("m")];
+  if (date("m") == 1) {
+    $mesMostrar = "Enero";
+  }
+  if (date("m") == 2) {
+    $mesMostrar = "Febrero";
+  }
+  if (date("m") == 3) {
+    $mesMostrar = "Marzo";
+  }
+  if (date("m") == 4) {
+    $mesMostrar = "Abril";
+  }
+  if (date("m") == 5) {
+    $mesMostrar = "Mayo";
+  }
+  if (date("m") == 6) {
+    $mesMostrar = "Junio";
+  }
+  if (date("m") == 7) {
+    $mesMostrar = "Julio";
+  }
+  if (date("m") == 8) {
+    $mesMostrar = "Agosto";
+  }
+  if (date("m") == 9) {
+    $mesMostrar = "Septiembre";
+  }
+  if (date("m") == 10) {
+    $mesMostrar = "Octubre";
+  }
+  if (date("m") == 11) {
+    $mesMostrar = "Noviembre";
+  }
+  if (date("m") == 12) {
+    $mesMostrar = "Diciembre";
+  }
   return $mesMostrar;
 }
 $mesGraph = mesMostrar($st_year);
@@ -48,9 +68,7 @@ $result = $conn->query($sql);
 if (mysqli_num_rows($result) == true) {
   while ($row = $result->fetch_assoc()) {
     $total = $row["total"];
-    if ($total == 0) {
-      header("Location: block.php");
-    }
+    // if($total==0){header("Location: block.php");}
   }
 } else {
   $last_report = "S/Rep";
@@ -72,7 +90,7 @@ $bars_data = "";
 $bars_data_ping = "";
 $data_last = "";
 foreach ($st_ip_list as &$st_ip_list_ip) {
-  $sql = "SELECT speedtest.st_down,speedtest.st_up,speedtest.st_ip,speedtest.st_date,ips.ip_name,speedtest.st_ping
+  $sql = "SELECT speedtest.st_down,speedtest.st_up,speedtest.st_ip,speedtest.st_date,ips.ip_name,speedtest.st_ping 
     FROM speedtest
     INNER JOIN ips ON speedtest.st_ip = ips.ip_number
     WHERE speedtest.st_ip = '$st_ip_list_ip'
@@ -106,7 +124,7 @@ foreach ($st_ip_list as &$st_ip_list_ip) {
             <form action='obj.php' method='post'>
             <input type='hidden' id='ip_test' name='ip_test' value='$st_ip'>
             <div id='$st_ip'><button class='btn $color btn-block'>
-            $ip_name<br>Hace $diff_minutes minutos
+            $ip_name<br>Hace $diff_minutes min.
             </button></div>
             </form>
             </div>";
@@ -146,39 +164,52 @@ $table_up .= "</table>";
 $table_ping .= "</table>";
 
 $conn->close();
+include("header.php");
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Medidor de Velocidad">
-  <meta name="author" content="Juan Maioli">
-  <title id='titulo'>PikApp <?= $ip_client ?></title>
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="css/bootstrap.min.css?version=5.1.0">
-  <!-- Favicon for this template -->
-  <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-  <link rel="manifest" href="images/manifest.json">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
-  <meta name="theme-color" content="#ffffff">
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <div class="container-fluid">
+    <div class="row mt-2">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <div class="card shadow-night-sm">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-md-12">
+                <h2 class='text-darkmagenta'><img src="images/speedometer.svg" class="" width="50px" /> Resumén SpeedTest</h2>
+                <span class="text-primary">(Su IP: <?= $ip_client ?>)</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row mt-3">
+              <div class="col-md">
+                <div class="border p-3 shadow-darkmagenta-md rounded">
+                  <div class="row"><?= $data_last ?></div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-8">
+                <div id="bars_last_test" class="border p-3 shadow-darkmagenta-md rounded"></div>
+              </div>
+              <div class="col-md-4">
+                <div id="bars_last_ping" class="border p-3 shadow-darkmagenta-md rounded"></div>
+              </div>
+            </div>
+            <div class="row mt-5">
+              <div class="col-md"><?= $table_down ?></div>
+              <div class="col-md"><?= $table_up ?></div>
+              <div class="col-md"><?= $table_ping ?></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+  </div>
+  <br><br><br>
   <script type="text/javascript">
     google.charts.load('current', {
       'packages': ['bar']
@@ -233,65 +264,17 @@ $conn->close();
   </script>
   <script>
     setInterval(obtener_json, 60000);
-
     function obtener_json() {
       fetch('utils.php')
         .then(datos => datos.json())
         .then(datos => {
           for (let dato of datos) {
             valor = `${dato.st_ip}`;
-            data = `<button class='btn btn-${dato.color} btn-block'>${dato.ip_name}<br>Hace ${dato.diff_minutes} minutos</button>`
+            data = `<button class='btn btn-${dato.color}'>${dato.ip_name}<br>Hace ${dato.diff_minutes} min.</button>`
             document.getElementById(valor).innerHTML = data;
           }
         })
+      // console.log(new Date(Date.now()));
     }
   </script>
-
-</head>
-
-<body>
-  <div class="container-fluid">
-    <div class="row mt-2">
-      <div class="col-md-1"></div>
-      <div class="col-md-10">
-        <div class="card">
-          <div class="card-header">
-            <div class="row">
-              <div class="col-md-12">
-                <h2 class='text-success'><img src="images/speedometer.svg" class="" width="50px" /> Resumén SpeedTest</h2>
-                <span class="text-primary">(Su IP: <?= $ip_client ?>)</span>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="row mt-3">
-              <div class="col-md">
-                <div class="border p-3 border-success rounded-lg">
-                  <div class="row"><?= $data_last ?></div>
-                </div>
-              </div>
-
-            </div>
-            <div class="row mt-3">
-              <div class="col-md-8">
-                <div id="bars_last_test" class="border p-3 border-success rounded-lg"></div>
-              </div>
-              <div class="col-md-4">
-                <div id="bars_last_ping" class="border p-3 border-success rounded-lg"></div>
-              </div>
-            </div>
-            <div class="row mt-5">
-              <div class="col-md"><?= $table_down ?></div>
-              <div class="col-md"><?= $table_up ?></div>
-              <div class="col-md"><?= $table_ping ?></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-1"></div>
-    </div>
-  </div>
-  <br><br><br>
-</body>
-
-</html>
+  <?php include("footer.php"); ?>
