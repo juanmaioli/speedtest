@@ -6,7 +6,6 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=utf-8");
 
 $st_date_diff = new DateTime(date("Y-m-d H:i:s"));
-
 $conn = new mysqli($db_server, $db_user, $db_pass, $db_name, $db_serverport);
 mysqli_set_charset($conn, 'utf8');
 
@@ -19,13 +18,10 @@ if (mysqli_num_rows($result) == true) {
     array_push($st_ip_list, $row["st_ip"]);
   }
 }
-$data_last = "[";
+
+$data_list = [];
 foreach ($st_ip_list as &$st_ip_list_ip) {
-  $sql = "SELECT speedtest.st_ip,speedtest.st_date,ips.ip_name
-    FROM speedtest
-    INNER JOIN ips ON speedtest.st_ip = ips.ip_number
-    WHERE speedtest.st_ip = '$st_ip_list_ip'
-    ORDER BY speedtest.st_id DESC LIMIT 1";
+  $sql = "SELECT speedtest.st_ip,speedtest.st_date,ips.ip_name FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number WHERE speedtest.st_ip = '$st_ip_list_ip' ORDER BY speedtest.st_id DESC LIMIT 1";
   $result = $conn->query($sql);
   $total_lineas = $result->num_rows;
   if (mysqli_num_rows($result) == true) {
@@ -42,16 +38,16 @@ foreach ($st_ip_list as &$st_ip_list_ip) {
       } else {
         $color = "success";
       }
-      $data_last .=
-        "{" . chr(34) . "ip_name" . chr(34) . ":" . chr(34) . $ip_name . chr(34) . "," .
-        chr(34) . "st_ip" . chr(34) . ":" . chr(34) . $st_ip . chr(34) . "," .
-        chr(34) . "color" . chr(34) . ":" . chr(34) . $color . chr(34) . "," .
-        chr(34) . "diff_minutes" . chr(34) . ":" . chr(34) . $diff_minutes . chr(34) . "},";
+      $data_list[] = [
+        'st_ip' => $st_ip,
+        'st_date' => $st_date,
+        'ip_name' => $ip_name,
+        'color' => $color
+    ];
     }
   }
 }
-
-$data_last .= "]";
-$data_last = str_replace("},]", "}]", $data_last);
 $conn->close();
-echo $data_last;
+$json = json_encode($data_list);
+
+echo $json;
