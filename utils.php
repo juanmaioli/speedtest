@@ -42,7 +42,8 @@ foreach ($st_ip_list as &$st_ip_list_ip) {
         'st_ip' => $st_ip,
         'st_date' => $st_date,
         'ip_name' => $ip_name,
-        'color' => $color
+        'color' => $color,
+        'diff_minutes' => $diff_minutes
     ];
     }
   }
