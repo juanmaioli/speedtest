@@ -1,7 +1,12 @@
+#! /bin/python3
 import urllib.request
 import subprocess
 
-testspeed = subprocess.Popen('speedtest-cli --simple --secure', shell=True, stdout=subprocess.PIPE).stdout.read().decode()
+listaServidores = subprocess.Popen('speedtest-cli --secure --list', shell=True, stdout=subprocess.PIPE).stdout.read().decode()
+listaServidores = listaServidores.splitlines()
+servidor = listaServidores[1].split(')')[0]
+
+testspeed = subprocess.Popen('speedtest-cli --simple --secure --server ' + servidor, shell=True, stdout=subprocess.PIPE).stdout.read().decode()
 testspeed = testspeed.splitlines()
 
 testspeed[0] = testspeed[0].replace('Ping: ','')
