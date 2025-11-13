@@ -41,19 +41,5 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-  <!-- Inicio Toggle modo dark -->
-  <!-- <nav class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-    <button class="btn btn-primary py-2 dropdown-toggle d-flex align-items-center" id="btn-theme" type="button" data-bs-toggle="dropdown"><i class="fa-regular fa-circle-half-stroke fa-fw"></i></button>
-    <ul class="dropdown-menu dropdown-menu-end shadow">
-      <li>
-        <button type="button" class="dropdown-item d-flex align-items-center" onclick="changeTheme('light')"><i class="fa-regular fa-sun fa-fw"></i>&nbsp;Claro</button>
-      </li>
-      <li>
-        <button type="button" class="dropdown-item d-flex align-items-center" onclick="changeTheme('dark')"><i class="fa-regular fa-moon-stars fa-fw"></i>&nbsp;Oscuro</button>
-      </li>
-      <li>
-        <button type="button" class="dropdown-item d-flex align-items-center" onclick="changeTheme('auto')"><i class="fa-regular fa-circle-half-stroke fa-fw"></i>&nbsp;Auto</button>
-      </li>
-    </ul>
-  </nav> -->
-  <!-- Fin Toggle modo dark -->
+
+

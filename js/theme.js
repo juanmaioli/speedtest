@@ -1,6 +1,6 @@
 const storedTheme = localStorage.getItem('theme')
 const themeIcon = {
-  auto:'<i class="fa-regular fa-circle-half-stroke fa-fw"></i>',
+  // auto:'<i class="fa-regular fa-circle-half-stroke fa-fw"></i>',
   dark:'<i class="fa-regular fa-moon-stars fa-fw"></i>',
   light:'<i class="fa-regular fa-sun fa-fw"></i>'
 }

@@ -1,5 +1,5 @@
-<script src="js/bootstrap.bundle.min.js?version=5.2.3"></script>
-<!-- <script src="js/theme.js"></script> -->
+<script src="js/bootstrap.bundle.min.js?version=5.3.0"></script>
+<script src="js/theme.js"></script>
 <div class="separador"></div>
 <footer>
   <div class="row mt-2">
@@ -13,8 +13,25 @@
       </a>
     </div>
     <div class="col-1">
+      <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" role="switch" id="switchTableCard" onchange="changeView()">
+      <label class="form-check-label text-white" id="switchTableCardLabel" for="switchTableCard" onclick="document.getElementById('switchTableCard').toogle"><i class="fa-regular fa-sun fa-fw fa-2x"></i></label>  
+    </div>
     </div>
   </div>
 </footer>
 </body>
+<script>
+  async function changeView() {
+    const switchTableCard = document.querySelector('#switchTableCard')
+    const switchTableCardLabel = document.querySelector('#switchTableCardLabel')
+    if (switchTableCard.checked) {
+      switchTableCardLabel.innerHTML = '<i class="fa-regular fa-moon-stars fa-fw fa-2x"></i>'
+      changeTheme('dark')
+    } else {
+      switchTableCardLabel.innerHTML = '<i class="fa-regular fa-sun fa-fw fa-2x"></i>'
+      changeTheme('light')
+    }
+  }
+</script>
 </html>
