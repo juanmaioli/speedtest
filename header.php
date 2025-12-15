@@ -41,5 +41,10 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 1000;">
+    <button class="btn btn-outline-danger" id="btn-theme" onclick="toggleTheme()">
+      <!-- Icono se carga desde theme.js -->
+    ffgghghg</button>
+  </div>
 
 

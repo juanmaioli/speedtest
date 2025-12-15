@@ -98,7 +98,7 @@ if (mysqli_num_rows($result) == true) {
   }
 }
 $st_ip_list .= "</select>";
-
+//Ultimas 24hs SELECT speedtest.* , ip_name FROM speedtest left join ips ON ip_number = st_ip WHERE st_date <= CURTIME( ) AND st_date >= DATE_SUB( CURTIME( ), INTERVAL 24 HOUR ) AND ip_name = 'Casa Fibra 800Mb';
 $sql = "SELECT * FROM speedtest
     WHERE st_date <= CURTIME( ) AND st_date >= DATE_SUB( CURTIME( ), INTERVAL 24 HOUR ) AND st_ip = '" . $ip_test . "'";
 $result = $conn->query($sql);
