@@ -89,6 +89,7 @@ include("header.php");
         chart: {
           title: 'Speedtest de todos los Servers',
           subtitle: 'Download y Upload según último reporte',
+          backgroundColor: 'transparent'
         }
       };
 
@@ -115,7 +116,8 @@ include("header.php");
         hAxis: {
           title: 'Server'
         },
-        height: 600
+        height: 600,
+        backgroundColor: 'transparent'
       };
 
       var chart = new google.charts.Bar(document.getElementById('bars_last_ping'));

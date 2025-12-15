@@ -266,7 +266,8 @@ include("header.php");
         chart: {
           title: 'Speed Test Últmas 24hs',
           subtitle: 'Velocidades por hora',
-          legend: 'none'
+          legend: 'none',
+          backgroundColor: 'transparent'
         },
         height: 400,
         axes: {
@@ -301,6 +302,7 @@ include("header.php");
         chart: {
           title: 'Speed Test durante <?= $mesGraph ?> de <?= $st_year ?>',
           subtitle: 'Velocidades por hora',
+          backgroundColor: 'transparent'
         },
         height: 400,
         axes: {
@@ -335,6 +337,7 @@ include("header.php");
         chart: {
           title: 'Speed Test durante <?= $st_year ?>',
           subtitle: 'Velocidades por dia',
+          backgroundColor: 'transparent'
         },
         height: 400,
         axes: {
@@ -368,7 +371,8 @@ include("header.php");
         redTo: 80,
         yellowFrom: 40,
         yellowTo: 60,
-        max: 80
+        max: 80,
+        backgroundColor: 'transparent'
       };
       var chart = new google.visualization.Gauge(document.getElementById('chart_div_ping'));
       chart.draw(data, options_ping);
@@ -384,7 +388,8 @@ include("header.php");
         redTo: 10,
         yellowFrom: 10,
         yellowTo: 20,
-        max: 500
+        max: 500,
+        backgroundColor: 'transparent'
       };
       var chart = new google.visualization.Gauge(document.getElementById('chart_div_down'));
       chart.draw(data, options_down);
@@ -400,7 +405,8 @@ include("header.php");
         redTo: 5,
         yellowFrom: 5,
         yellowTo: 10,
-        max: 500
+        max: 500,
+        backgroundColor: 'transparent'
       };
       var chart = new google.visualization.Gauge(document.getElementById('chart_div_up'));
       chart.draw(data, options_up);
