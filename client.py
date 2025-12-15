@@ -4,6 +4,12 @@ import urllib.request
 import sys
 
 def main():
+    if len(sys.argv) != 2:
+        print("Uso: python3 client.py <url_base_del_servidor>", file=sys.stderr)
+        sys.exit(1)
+
+    base_url = sys.argv[1]
+
     try:
         # Ejecutar el test de velocidad sin mostrar nada
         result = subprocess.run(
@@ -22,8 +28,9 @@ def main():
         download = lines[1].replace("Download: ", "").replace(" Mbit/s", "").replace(".", "p")
         upload = lines[2].replace("Upload: ", "").replace(" Mbit/s", "").replace(".", "p")
 
-        # Construir URL de envío
-        url = f"http://172.21.5.3/speedtest/raw.php?id={ping}-{download}-{upload}-casa_fibra"
+        # Construir URL de envío usando la URL base proporcionada
+        # Ejemplo: http://tu.dominio/speedtest/raw.php?id={ping}-{download}-{upload}-{alias}
+        url = f"{base_url}{ping}-{download}-{upload}-casa_fibra"
 
         # Enviar resultado sin imprimir nada
         urllib.request.urlopen(url, timeout=10).read()

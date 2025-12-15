@@ -1,169 +1,40 @@
 <?php
 include("config.php");
-$ip_client = $_SERVER['REMOTE_ADDR'];
+include("data_logic.php");
 
+$ip_client = $_SERVER['REMOTE_ADDR'];
 mb_internal_encoding('UTF-8');
 mb_http_output('UTF-8');
-
-if (isset($_POST['ip_test'])) {
-  $ip_test = $_POST['ip_test'];
-} else {
-  $ip_test = $ip_client;
-}
 
 $conn = new mysqli($db_server, $db_user, $db_pass, $db_name, $db_serverport);
 mysqli_set_charset($conn, 'utf8');
 
-$st_date_diff = new DateTime(date("Y-m-d H:i:s"));
-$st_now = date("Y-m-d H:i:s");
-$st_month = date("m");
-$st_year = date("Y");
-
-function mesMostrar()
-{
-  if (date("m") == 1) {
-    $mesMostrar = "Enero";
-  }
-  if (date("m") == 2) {
-    $mesMostrar = "Febrero";
-  }
-  if (date("m") == 3) {
-    $mesMostrar = "Marzo";
-  }
-  if (date("m") == 4) {
-    $mesMostrar = "Abril";
-  }
-  if (date("m") == 5) {
-    $mesMostrar = "Mayo";
-  }
-  if (date("m") == 6) {
-    $mesMostrar = "Junio";
-  }
-  if (date("m") == 7) {
-    $mesMostrar = "Julio";
-  }
-  if (date("m") == 8) {
-    $mesMostrar = "Agosto";
-  }
-  if (date("m") == 9) {
-    $mesMostrar = "Septiembre";
-  }
-  if (date("m") == 10) {
-    $mesMostrar = "Octubre";
-  }
-  if (date("m") == 11) {
-    $mesMostrar = "Noviembre";
-  }
-  if (date("m") == 12) {
-    $mesMostrar = "Diciembre";
-  }
-  return $mesMostrar;
+// --- Verificación de IP del cliente (usando sentencias preparadas) ---
+$stmt = $conn->prepare("SELECT count(*) as total FROM speedtest where st_ip = ?");
+$stmt->bind_param("s", $ip_client);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+if ($row['total'] == 0) {
+    header("Location: block.php");
+    exit();
 }
-$mesGraph = mesMostrar($st_year);
+$stmt->close();
 
-$sql = "SELECT count(*) as total FROM speedtest where st_ip = '$ip_client' ";
-$result = $conn->query($sql);
+// --- Obtener todos los datos de las funciones centralizadas ---
+$speedtestData = getSpeedtestData($conn);
+$avgTablesData = getAvgTables($conn);
 
+$bars_data = $speedtestData['bars_data'];
+$bars_data_ping = $speedtestData['bars_data_ping'];
+$data_last = $speedtestData['data_last'];
 
-if (mysqli_num_rows($result) == true) {
-  while ($row = $result->fetch_assoc()) {
-    $total = $row["total"];
-    if($total==0){header("Location: block.php");}
-  }
-} else {
-  $last_report = "S/Rep";
-}
-
-$st_ip_list = array();
-
-$sql = "SELECT speedtest.st_ip FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number WHERE ips.ip_delete = 0 GROUP BY speedtest.st_ip ORDER BY ips.ip_name ASC";
-$result = $conn->query($sql);
-
-if (mysqli_num_rows($result) == true) {
-  while ($row = $result->fetch_assoc()) {
-    array_push($st_ip_list, $row["st_ip"]);
-  }
-}
-
-$lx = 0;
-$bars_data = "";
-$bars_data_ping = "";
-$data_last = "";
-foreach ($st_ip_list as &$st_ip_list_ip) {
-  $sql = "SELECT speedtest.st_down,speedtest.st_up,speedtest.st_ip,speedtest.st_date,ips.ip_name,speedtest.st_ping 
-    FROM speedtest
-    INNER JOIN ips ON speedtest.st_ip = ips.ip_number
-    WHERE speedtest.st_ip = '$st_ip_list_ip'
-    ORDER BY speedtest.st_id DESC  LIMIT 1";
-  $result = $conn->query($sql);
-  $total_lineas = $result->num_rows;
-  if (mysqli_num_rows($result) == true) {
-    while ($row = $result->fetch_assoc()) {
-      $lx++;
-      $st_ip  = $row["st_ip"];
-      $st_down  = $row["st_down"];
-      $st_up  = $row["st_up"];
-      $st_ping  = $row["st_ping"];
-      $st_date  = $row["st_date"];
-      $ip_name  = $row["ip_name"];
-      $bars_data .= "['" . $ip_name . chr(92) . chr(110) .  $st_ip . chr(92) . chr(110) . $st_date . "' ,$st_down ,$st_up],";
-      $bars_data_ping .= "['" . $ip_name . "' ,$st_ping ],";
-      $st_report_date = $st_date_diff->diff(new DateTime($st_date));
-      $diff_minutes = $st_report_date->days * 24 * 60;
-      $diff_minutes += $st_report_date->h * 60;
-      $diff_minutes += $st_report_date->i;
-
-      if ($diff_minutes > 60) {
-        $color = "btn-danger";
-      } else {
-        $color = "btn-success";
-      }
-
-      // $data_last.="<div class='col text-white $color small m-1 rounded-lg' title='$st_date'>$ip_name<br>Hace $diff_minutes minutos</div>";
-      $data_last .= "<div class='col text-center'>
-            <form action='obj.php' method='post'>
-            <input type='hidden' id='ip_test' name='ip_test' value='$st_ip'>
-            <div id='$st_ip'><button class='btn $color btn-block'>
-            $ip_name<br>Hace $diff_minutes min.
-            </button></div>
-            </form>
-            </div>";
-    }
-  }
-}
-
-$table_down = "<table class='table table-striped table-hover table-sm'> <thead> <th colspan='2'>AVG Download</th></thead>";
-$table_up = "<table class='table table-striped table-hover table-sm'> <thead> <th colspan='2'>AVG Upload</th></thead>";
-$table_ping = "<table class='table table-striped table-hover table-sm'> <thead> <th colspan='2'>AVG Ping</th> </thead>";
-
-$sql = "SELECT ips.ip_name,speedtest.st_ip,round( Avg( speedtest.st_down ),1) AS PromDownload FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number GROUP BY speedtest.st_ip ORDER BY PromDownload DESC";
-$result = $conn->query($sql);
-if (mysqli_num_rows($result) == true) {
-  while ($row = $result->fetch_assoc()) {
-    $table_down .= "<tr><td>" . $row["ip_name"] . "(" . $row["st_ip"] . ")</td><td>" . $row["PromDownload"] . "</td></tr>";
-  }
-}
-$sql = "SELECT ips.ip_name,st_ip,round( avg( st_up ),1) AS PromUpload FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number GROUP BY st_ip ORDER BY PromUpload DESC ";
-$result = $conn->query($sql);
-
-if (mysqli_num_rows($result) == true) {
-  while ($row = $result->fetch_assoc()) {
-    $table_up .= "<tr><td>" . $row["ip_name"] . "(" . $row["st_ip"] . ")</td><td>" . $row["PromUpload"] . "</td></tr>";
-  }
-}
-$sql = "SELECT ips.ip_name,st_ip,round( avg( st_ping ), 1 ) AS PromPing FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number  GROUP BY st_ip  ORDER BY PromPing ASC";
-$result = $conn->query($sql);
-if (mysqli_num_rows($result) == true) {
-  while ($row = $result->fetch_assoc()) {
-    $table_ping .= "<tr><td>" . $row["ip_name"] . "(" . $row["st_ip"] . ")</td><td>" . $row["PromPing"] . "</td></tr>";
-  }
-}
-
-$table_down .= "</table>";
-$table_up .= "</table>";
-$table_ping .= "</table>";
+$table_down = $avgTablesData['table_down'];
+$table_up = $avgTablesData['table_up'];
+$table_ping = $avgTablesData['table_ping'];
 
 $conn->close();
+
 include("header.php");
 ?>
 
@@ -177,7 +48,7 @@ include("header.php");
             <div class="row">
               <div class="col-md-12">
                 <h2 class='text-darkmagenta'><img src="images/speedometer.svg" class="" width="50px" /> Resumén SpeedTest</h2>
-                <span class="text-primary">(Su IP: <?= $ip_client ?>)</span>
+                <span class="text-primary">(Su IP: <?= htmlspecialchars($ip_client) ?>)</span>
               </div>
             </div>
           </div>

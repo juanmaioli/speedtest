@@ -1,36 +1,45 @@
-# Speedtest Logging (PHP, MySql & Python)
+# Speedtest Logger
 
-Es un sistema que te permite llevar un control y estadísticas de la velocidad de conexión de tus servidores.
+Es un sistema simple para registrar y visualizar pruebas de velocidad de conexión a internet de manera periódica desde múltiples servidores o clientes. Utiliza `speedtest-cli` para las mediciones, un panel web en PHP para la visualización y un cliente Python para enviar los datos.
 
-## 1 - Instalar speedtest-cli
-#### 1.1 - Debian/Ubuntu
+## ✨ Características
+
+*   **Panel Web:** Interfaz limpia que muestra el último reporte de cada cliente.
+*   **Gráficos Históricos:** Visualización de promedios de subida, bajada y ping.
+*   **Gráficos en Tiempo Real:** Gráficos que muestran el estado del último test de todos los servidores.
+*   **Cliente Ligero:** Un script en Python se encarga de realizar el test y enviar los resultados.
+*   **Fácil Automatización:** Diseñado para ser ejecutado fácilmente a través de un `cron job`.
+
+## 📋 Requisitos
+
+*   Servidor web con **PHP 7.4** o superior.
+*   Base de datos **MySQL** o **MariaDB**.
+*   **Python 3.x** y el paquete `speedtest-cli` en los clientes que realizarán las pruebas.
+
+## 🚀 Instalación
+
+### 1. Speedtest-CLI
+
+En cada cliente que vaya a realizar las pruebas, instala `speedtest-cli`.
+
+*   **Debian/Ubuntu:** `sudo apt update && sudo apt install speedtest-cli`
+*   **Fedora/CentOS:** `sudo yum install speedtest`
+*   **macOS (con Homebrew):** `brew install speedtest-cli`
+
+Para más información, visita [speedtest.net/apps/cli](https://www.speedtest.net/es/apps/cli).
+
+### 2. Repositorio en el Servidor Web
+
+Clona este repositorio en un directorio accesible por tu servidor web (ej. `/var/www/html/`).
+
 ```bash
-    sudo apt-get update
-    sudo apt-get install speedtest
+git clone https://github.com/juanmaioli/speedtest.git
 ```
 
-#### 1.2 - Fedora/Centos
-```bash
-    sudo yum install wget
-    wget https://bintray.com/ookla/rhel/rpm -O bintray-ookla-rhel.repo
-    sudo mv bintray-ookla-rhel.repo /etc/yum.repos.d/
-    sudo yum install speedtest
-```
+### 3. Base de Datos
 
-#### 1.3 - MacOS
-```bash
-    brew tap teamookla/speedtest
-    brew update
-    brew install speedtest --force
-```
-[Más info: www.speedtest.net](www.speedtest.net/es/apps/cli)
+Crea una base de datos en tu servidor MySQL y ejecuta las siguientes consultas para crear las tablas `speedtest` e `ips`.
 
-## 2 - Clonar el repositorio en el directorio correspondiente de tu web server con php 7.4 (Ej. /var/www)
-```bash
-git clone git@github.com:juanmaioli/speedtest.git
-```
-
-## 3 - Crear una db en Mysql y Crear la tabla speedtest
 ```sql
 CREATE TABLE `speedtest` (
   `st_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -40,77 +49,64 @@ CREATE TABLE `speedtest` (
   `st_ip` varchar(15) NOT NULL,
   `st_date` datetime NOT NULL,
   PRIMARY KEY (`st_id`,`st_ip`,`st_date`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-```
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
 
-## 3.1 - Crear la tabla ips
-```sql
 CREATE TABLE `ips` (
   `ip_id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_number` varchar(20) NOT NULL,
   `ip_name` varchar(255) DEFAULT NULL,
-  `ip_delete` int(255) DEFAULT 0,
+  `ip_delete` int(1) DEFAULT 0,
   `ip_alias` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`ip_id`,`ip_number`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb3;
 ```
+En la tabla `ips`, puedes pre-cargar los servidores que vas a monitorear, asignándoles un `ip_alias` y un `ip_name` para identificarlos fácilmente.
 
-## 3.2 - Editar config_example.php y renombrar a config.php
+### 4. Configuración del Servidor
+
+Renombra `config_example.php` a `config.php` y edítalo con los datos de acceso a tu base de datos.
+
 ```php
 <?php
-  $db_server      = "localhost";// Db Servidor
-  $db_user        = "db_user";// Db Usuario
-  $db_pass        = "db_password";//Db Clave
-  $db_name        = "db_name";//DB nombre
+  // config.php
+  $db_server      = "localhost";    // Servidor de la DB
+  $db_user        = "db_user";      // Usuario de la DB
+  $db_pass        = "db_password";  // Clave de la DB
+  $db_name        = "db_name";      // Nombre de la DB
   $db_serverport  = "3306";
 ?>
 ```
 
-## 4 - Crear client.py en el home del usuario
-```bash
-  nano client.py
-```
-#### Contenido de client.py
-Reemplazar alias con un nombre corto para tu servidor manteniendo el guion.
-```python
-import urllib.request
-import subprocess
+## 💻 Configuración del Cliente
 
-testspeed = subprocess.Popen('speedtest-cli --simple --secure', shell=True, stdout=subprocess.PIPE).stdout.read().decode()
-testspeed = testspeed.splitlines()
+El script `client.py` incluido en el repositorio es el encargado de correr el test y enviar los datos a tu servidor. Para facilitar su ejecución, puedes usar el script de ejemplo `speedtest.sh.example`.
 
-testspeed[0] = testspeed[0].replace('Ping: ','')
-testspeed[0] = testspeed[0].replace(' ms','')
-testspeed[1] = testspeed[1].replace('Download: ','')
-testspeed[1] = testspeed[1].replace(' Mbit/s','')
-testspeed[2] = testspeed[2].replace('Upload: ','')
-testspeed[2] = testspeed[2].replace(' Mbit/s','')
-testspeed[0] = testspeed[0].replace('.','p')
-testspeed[1] = testspeed[1].replace('.','p')
-testspeed[2] = testspeed[2].replace('.','p')
+1.  **Copia el ejemplo:** Copia `speedtest.sh.example` a una ubicación personal, por ejemplo, `/home/tu_usuario/speedtest.sh`.
 
-url_raw = 'https://pikapp.com.ar/'+testspeed[0]+'-'+testspeed[1]+'-'+testspeed[2]+'-alias'
-response = urllib.request.urlopen(url_raw)
-headers = response.getheaders()
-content_type = response.getheader('Content-Type')
-rta = response.read().decode()
-print(rta)
-```
+    ```bash
+    cp speedtest.sh.example /home/tu_usuario/speedtest.sh
+    ```
 
-## 5 - Crear speedtest.sh en el home del usuario
-```bash
-  nano speedtest.sh
-```
+2.  **Edita el script:** Modifica las variables `PROJECT_DIR` y `RAW_URL` dentro de `speedtest.sh` para que apunten a tu instalación y dominio.
 
-#### Contenido de speedtest.sh
-```bash
- #!/bin/bash
- /usr/bin/python3 /home/usuario/client.py
-```
+3.  **Da permisos de ejecución:**
 
-## 6 - Crear una tarea en cron
-```bash
-  crontab -e
-  # Agregar la linea para ejecutar la tarea en el minuto 30 cada hora.
-  */30   *       *       *       *       sudo /home/usuario/speedtest.sh
-```
+    ```bash
+    chmod +x /home/tu_usuario/speedtest.sh
+    ```
+
+## 🤖 Automatización con Cron
+
+Para que las pruebas se ejecuten automáticamente, crea una tarea en `cron`.
+
+1.  Abre el editor de cron:
+    ```bash
+    crontab -e
+    ```
+
+2.  Añade una línea para ejecutar tu script `speedtest.sh` en el intervalo que prefieras. Este ejemplo lo ejecuta cada 30 minutos:
+    ```cron
+    */30 * * * * /home/tu_usuario/speedtest.sh
+    ```
+
+¡Y eso es todo! Tu cliente comenzará a reportar datos de velocidad a tu servidor y podrás verlos en el panel web.

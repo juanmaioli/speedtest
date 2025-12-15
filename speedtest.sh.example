@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Este es un script de ejemplo para ejecutar el cliente de speedtest.
+# Cópialo a una ubicación como /home/tu_usuario/speedtest.sh, dale permisos de ejecución (chmod +x) y ajústalo.
+
+# --- CONFIGURACIÓN ---
+
+# 1. Ruta al directorio donde clonaste el proyecto.
+# Ejemplo: PROJECT_DIR="/var/www/html/speedtest"
+PROJECT_DIR="/ruta/completa/a/tu/repo/speedtest"
+
+# 2. URL completa del endpoint raw.php de tu servidor.
+# ¡No olvides el "?id=" al final!
+# Ejemplo: RAW_URL="http://mi-servidor.com/speedtest/raw.php?id="
+RAW_URL="http://tu.dominio.com/speedtest/raw.php?id="
+
+# --- EJECUCIÓN ---
+
+# Llama al script de Python, pasándole la URL como argumento.
+# Asegúrate de que la ruta a python3 es la correcta para tu sistema.
+/usr/bin/python3 "${PROJECT_DIR}/client.py" "${RAW_URL}"
