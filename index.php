@@ -53,14 +53,10 @@ include("header.php");
             </div>
             <div class="row mt-3">
               <div class="col-md-8">
-                <div class="border p-3 shadow-darkmagenta-md rounded">
-                  <canvas id="bars_last_test_canvas"></canvas>
-                </div>
+                <div id="bars_last_test" class="border p-3 shadow-darkmagenta-md rounded"></div>
               </div>
               <div class="col-md-4">
-                <div class="border p-3 shadow-darkmagenta-md rounded">
-                  <canvas id="bars_last_ping_canvas"></canvas>
-                </div>
+                <div id="bars_last_ping" class="border p-3 shadow-darkmagenta-md rounded"></div>
               </div>
             </div>
             <div class="row mt-5">
@@ -76,98 +72,58 @@ include("header.php");
   </div>
   <br><br><br>
   <script type="text/javascript">
-    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-    const isDarkMode = currentTheme === 'dark';
-    const bodyColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-body-color').trim();
-    const bodyBg = 'transparent'; // Use transparent as the canvas will be in a themed card
+    google.charts.load('current', {
+      'packages': ['bar']
+    });
+    google.charts.setOnLoadCallback(drawChart);
 
-    function createBarChart(canvasId, title, subtitle, labels, datasets, horizontal = false) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        const config = {
-            type: horizontal ? 'bar' : 'bar', // Chart.js bar is already horizontal by default for some configurations
-            data: {
-                labels: labels,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: horizontal ? 'y' : 'x', // Make bars horizontal
-                plugins: {
-                    title: {
-                        display: true,
-                        text: title,
-                        color: bodyColor,
-                        font: {
-                            size: 16
-                        }
-                    },
-                    subtitle: {
-                        display: true,
-                        text: subtitle,
-                        color: bodyColor,
-                        font: {
-                            size: 12
-                        }
-                    },
-                    legend: {
-                        labels: {
-                            color: bodyColor
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: bodyColor
-                        },
-                        grid: {
-                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            color: bodyColor
-                        },
-                        grid: {
-                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
-                },
-                backgroundColor: bodyBg
-            }
-        };
-        return new Chart(ctx, config);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Server', 'Download', 'Upload'],
+        <?= $bars_data ?>
+      ]);
+
+      var options = {
+        bars: 'horizontal',
+        height: 600,
+        chart: {
+          title: 'Speedtest de todos los Servers',
+          subtitle: 'Download y Upload según último reporte',
+          backgroundColor: 'transparent'
+        }
+      };
+
+      var chart = new google.charts.Bar(document.getElementById('bars_last_test'));
+
+      chart.draw(data, google.charts.Bar.convertOptions(options));
     }
+  </script>
+  <script type="text/javascript">
+    google.charts.load('current', {
+      'packages': ['bar']
+    });
+    google.charts.setOnLoadCallback(drawChart);
 
-    // Data for bars_last_test
-    const barsDataRaw = [<?= $bars_data ?>];
-    const barsLabels = barsDataRaw.map(row => row[0]);
-    const downloadData = barsDataRaw.map(row => row[1]);
-    const uploadData = barsDataRaw.map(row => row[2]);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Server', 'Ping'],
+        <?= $bars_data_ping ?>
+      ]);
 
-    const barsDatasets = [{
-        label: 'Download',
-        data: downloadData,
-        backgroundColor: '#0A83F9'
-    }, {
-        label: 'Upload',
-        data: uploadData,
-        backgroundColor: '#FEBC37'
-    }];
-    createBarChart('bars_last_test_canvas', 'Speedtest de todos los Servers', 'Download y Upload según último reporte', barsLabels, barsDatasets, true);
+      var options = {
+        title: 'Ping de todos los Servers',
+        bars: 'horizontal',
+        hAxis: {
+          title: 'Server'
+        },
+        height: 600,
+        backgroundColor: 'transparent'
+      };
 
-    // Data for bars_last_ping
-    const barsPingDataRaw = [<?= $bars_data_ping ?>];
-    const barsPingLabels = barsPingDataRaw.map(row => row[0]);
-    const pingData = barsPingDataRaw.map(row => row[1]);
+      var chart = new google.charts.Bar(document.getElementById('bars_last_ping'));
 
-    const barsPingDatasets = [{
-        label: 'Ping',
-        data: pingData,
-        backgroundColor: '#34A84F'
-    }];
-    createBarChart('bars_last_ping_canvas', 'Ping de todos los Servers', '', barsPingLabels, barsPingDatasets, true);
+      chart.draw(data, google.charts.Bar.convertOptions(options));
+    }
   </script>
   <script>
     setInterval(obtener_json, 60000);

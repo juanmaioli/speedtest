@@ -1,5 +1,4 @@
 <script src="js/bootstrap.bundle.min.js?version=5.3.0"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/chart.umd.min.js"></script>
 <script src="js/theme.js"></script>
 <div class="separador"></div>
 <footer>

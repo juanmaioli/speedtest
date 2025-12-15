@@ -194,19 +194,13 @@ include("header.php");
             </div>
             <div class="row mt-3">
               <div class="col-md-4">
-                <div class="border p-3 shadow-purple-md rounded" align='center'>
-                  <canvas id="chart_div_ping_canvas"></canvas>
-                </div>
+                <div id="chart_div_ping" class="border p-3 shadow-purple-md rounded" align='center'></div>
               </div>
               <div class="col-md-4">
-                <div class="border p-3 shadow-darkblue-md rounded" align='center'>
-                  <canvas id="chart_div_down_canvas"></canvas>
-                </div>
+                <div id="chart_div_down" class="border p-3 shadow-darkblue-md rounded" align='center'></div>
               </div>
               <div class="col-md-4">
-                <div class="border p-3 shadow-orange-md rounded" align='center'>
-                  <canvas id="chart_div_up_canvas"></canvas>
-                </div>
+                <div id="chart_div_up" class="border p-3 shadow-orange-md rounded" align='center'></div>
               </div>
             </div>
           </div>
@@ -222,14 +216,10 @@ include("header.php");
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
-                <div class="border p-3 shadow-darkmagenta-md rounded">
-                  <canvas id="line_top_x_canvas"></canvas>
-                </div>
+                <div id="line_top_x" class="border p-3 shadow-darkmagenta-md rounded"></div>
               </div>
               <div class="col-md-6">
-                <div class="border p-3 shadow-darkmagenta-md rounded">
-                  <canvas id="line_top_x_mes_canvas"></canvas>
-                </div>
+                <div id="line_top_x_mes" class="border p-3 shadow-darkmagenta-md rounded"></div>
               </div>
             </div>
           </div>
@@ -244,9 +234,7 @@ include("header.php");
           <div class="card-body">
             <div class="row">
               <div class="col-md-12">
-                <div class="border p-3 shadow-darkmagenta-md rounded">
-                  <canvas id="line_top_x_anio_canvas"></canvas>
-                </div>
+                <div id="line_top_x_anio" class="border p-3 shadow-darkmagenta-md rounded"></div>
               </div>
             </div>
           </div>
@@ -262,260 +250,166 @@ include("header.php");
   </div>
   <br><br><br>
   <script type="text/javascript">
-    const currentTheme = document.documentElement.getAttribute('data-bs-theme');
-    const isDarkMode = currentTheme === 'dark';
-    const bodyColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-body-color').trim();
-    const bodyBg = 'transparent'; // Use transparent as the canvas will be in a themed card
+    google.charts.load('current', {
+      'packages': ['line']
+    });
+    google.charts.setOnLoadCallback(drawChart);
 
-    // Plugin for drawing text in the center of the doughnut chart
-    const centerText = {
-        id: 'centerText',
-        beforeDraw(chart) {
-            const { ctx, data, chartArea: { width, height } } = chart;
-            ctx.save();
-            ctx.font = 'bolder 20px sans-serif';
-            ctx.fillStyle = bodyColor;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            let text = data.datasets[0].data[0];
-            let x = width / 2;
-            let y = height / 2 + (chart.getDatasetMeta(0).data[0].y - chart.chartArea.top);
-            ctx.fillText(text, x, y);
-            ctx.restore();
-        }
-    };
-
-    function createGaugeChart(canvasId, label, value, max, redThreshold, yellowThreshold, colors) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        const data = {
-            labels: [label, ''],
-            datasets: [{
-                data: [value, max - value],
-                backgroundColor: colors,
-                borderColor: bodyBg,
-                borderWidth: 1
-            }]
-        };
-
-        const config = {
-            type: 'doughnut',
-            data: data,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                circumference: 180,
-                rotation: 270,
-                cutout: '80%', // Thickness of the gauge
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        enabled: false
-                    },
-                    title: {
-                        display: true,
-                        text: label,
-                        color: bodyColor,
-                        font: {
-                            size: 16
-                        }
-                    }
-                }
-            },
-            plugins: [centerText]
-        };
-        return new Chart(ctx, config);
-    }
-
-    // Ping Gauge
-    const pingMax = 80;
-    const pingRedFrom = 60;
-    const pingYellowFrom = 40;
-    const pingValue = <?= $st_ping_gauge ?>;
-    const pingColors = [
-        pingValue >= pingRedFrom ? '#D91A46' : (pingValue >= pingYellowFrom ? '#FEBC37' : '#34A84F'), // Actual value color
-        '#E0E0E0' // Remaining part color
-    ];
-    createGaugeChart('chart_div_ping_canvas', 'Ping ms', pingValue, pingMax, pingRedFrom, pingYellowFrom, pingColors);
-
-    // Download Gauge
-    const downloadMax = 500;
-    const downloadRedFrom = 0; // Assuming low values are red for download
-    const downloadYellowFrom = 10;
-    const downloadValue = <?= $st_down_gauge ?>;
-    const downloadColors = [
-        downloadValue <= 10 ? '#D91A46' : (downloadValue <= 20 ? '#FEBC37' : '#0A83F9'), // Actual value color
-        '#E0E0E0' // Remaining part color
-    ];
-    createGaugeChart('chart_div_down_canvas', 'Download Mbit/s', downloadValue, downloadMax, downloadRedFrom, downloadYellowFrom, downloadColors);
-
-    // Upload Gauge
-    const uploadMax = 500;
-    const uploadRedFrom = 0; // Assuming low values are red for upload
-    const uploadYellowFrom = 5;
-    const uploadValue = <?= $st_up_gauge ?>;
-    const uploadColors = [
-        uploadValue <= 5 ? '#D91A46' : (uploadValue <= 10 ? '#FEBC37' : '#34A84F'), // Actual value color
-        '#E0E0E0' // Remaining part color
-    ];
-    createGaugeChart('chart_div_up_canvas', 'Upload Mbit/s', uploadValue, uploadMax, uploadRedFrom, uploadYellowFrom, uploadColors);
-
-    // Line Charts
-    function createLineChart(canvasId, title, subtitle, labels, datasets) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        const config = {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: title,
-                        color: bodyColor,
-                        font: {
-                            size: 16
-                        }
-                    },
-                    subtitle: {
-                        display: true,
-                        text: subtitle,
-                        color: bodyColor,
-                        font: {
-                            size: 12
-                        }
-                    },
-                    legend: {
-                        labels: {
-                            color: bodyColor
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            color: bodyColor
-                        },
-                        grid: {
-                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            color: bodyColor
-                        },
-                        grid: {
-                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
-                },
-                backgroundColor: bodyBg
+    function drawChart() {
+      let data = new google.visualization.DataTable();
+      data.addColumn('string', 'Hora');
+      data.addColumn('number', 'Ping ms');
+      data.addColumn('number', 'Download Mbit/s');
+      data.addColumn('number', 'Upload Mbit/s');
+      data.addRows([<?= $filas ?>]);
+      let options = {
+        chart: {
+          title: 'Speed Test Últmas 24hs',
+          subtitle: 'Velocidades por hora',
+          legend: 'none',
+          backgroundColor: 'transparent'
+        },
+        height: 400,
+        axes: {
+          x: {
+            0: {
+              side: 'buttom'
             }
-        };
-        return new Chart(ctx, config);
+          }
+        },
+        colors: ['#34A84F', '#0A83F9', '#FEBC37']
+      };
+      var chart = new google.charts.Line(document.getElementById('line_top_x'));
+      chart.draw(data, google.charts.Line.convertOptions(options));
     }
+  </script>
+  <script type="text/javascript">
+    google.charts.load('current', {
+      'packages': ['line']
+    });
+    google.charts.setOnLoadCallback(drawChart);
 
-    // Data for Últmas 24hs
-    const filasData = [<?= $filas ?>];
-    const labels24hs = filasData.map(row => row[0]);
-    const pingData24hs = filasData.map(row => row[1]);
-    const downloadData24hs = filasData.map(row => row[2]);
-    const uploadData24hs = filasData.map(row => row[3]);
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Dia');
+      data.addColumn('number', 'Max Download Mbit/s');
+      data.addColumn('number', 'Min Download Mbit/s');
+      data.addColumn('number', 'Max Upload Mbit/s');
+      data.addColumn('number', 'Min Upload Mbit/s');
+      data.addRows([<?= $filas_mes ?>]);
 
-    const datasets24hs = [{
-        label: 'Ping ms',
-        data: pingData24hs,
-        borderColor: '#34A84F',
-        tension: 0.1,
-        fill: false
-    }, {
-        label: 'Download Mbit/s',
-        data: downloadData24hs,
-        borderColor: '#0A83F9',
-        tension: 0.1,
-        fill: false
-    }, {
-        label: 'Upload Mbit/s',
-        data: uploadData24hs,
-        borderColor: '#FEBC37',
-        tension: 0.1,
-        fill: false
-    }];
-    createLineChart('line_top_x_canvas', 'Speed Test Últmas 24hs', 'Velocidades por hora', labels24hs, datasets24hs);
+      var options = {
+        chart: {
+          title: 'Speed Test durante <?= $mesGraph ?> de <?= $st_year ?>',
+          subtitle: 'Velocidades por hora',
+          backgroundColor: 'transparent'
+        },
+        height: 400,
+        axes: {
+          x: {
+            0: {
+              side: 'buttom'
+            }
+          }
+        },
+        colors: ['#0A83F9', '#34A84F', '#FEBC37', '#D91A46']
+      };
+      var chart = new google.charts.Line(document.getElementById('line_top_x_mes'));
+      chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+  </script>
+  <script type="text/javascript">
+    google.charts.load('current', {
+      'packages': ['line']
+    });
+    google.charts.setOnLoadCallback(drawChart);
 
-    // Data for Mes
-    const filasMesData = [<?= $filas_mes ?>];
-    const labelsMes = filasMesData.map(row => row[0]);
-    const maxDownloadMes = filasMesData.map(row => row[1]);
-    const minDownloadMes = filasMesData.map(row => row[2]);
-    const maxUploadMes = filasMesData.map(row => row[3]);
-    const minUploadMes = filasMesData.map(row => row[4]);
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Fecha');
+      data.addColumn('number', 'Max Download Mbit/s');
+      data.addColumn('number', 'Min Download Mbit/s');
+      data.addColumn('number', 'Max Upload Mbit/s');
+      data.addColumn('number', 'Min Upload Mbit/s');
+      data.addRows([<?= $filas_anio ?>]);
 
-    const datasetsMes = [{
-        label: 'Max Download Mbit/s',
-        data: maxDownloadMes,
-        borderColor: '#0A83F9',
-        tension: 0.1,
-        fill: false
-    }, {
-        label: 'Min Download Mbit/s',
-        data: minDownloadMes,
-        borderColor: '#34A84F',
-        tension: 0.1,
-        fill: false
-    }, {
-        label: 'Max Upload Mbit/s',
-        data: maxUploadMes,
-        borderColor: '#FEBC37',
-        tension: 0.1,
-        fill: false
-    }, {
-        label: 'Min Upload Mbit/s',
-        data: minUploadMes,
-        borderColor: '#D91A46',
-        tension: 0.1,
-        fill: false
-    }];
-    createLineChart('line_top_x_mes_canvas', 'Speed Test durante <?= $mesGraph ?> de <?= $st_year ?>', 'Velocidades por hora', labelsMes, datasetsMes);
+      var options = {
+        chart: {
+          title: 'Speed Test durante <?= $st_year ?>',
+          subtitle: 'Velocidades por dia',
+          backgroundColor: 'transparent'
+        },
+        height: 400,
+        axes: {
+          x: {
+            0: {
+              side: 'buttom'
+            }
+          }
+        },
+        colors: ['#0A83F9', '#34A84F', '#FEBC37', '#D91A46']
+      };
+      var chart = new google.charts.Line(document.getElementById('line_top_x_anio'));
+      chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+  </script>
+  <script type="text/javascript">
+    google.charts.load('current', {
+      'packages': ['gauge']
+    });
+    google.charts.setOnLoadCallback(drawChart);
 
-    // Data for Año
-    const filasAnioData = [<?= $filas_anio ?>];
-    const labelsAnio = filasAnioData.map(row => row[0]);
-    const maxDownloadAnio = filasAnioData.map(row => row[1]);
-    const minDownloadAnio = filasAnioData.map(row => row[2]);
-    const maxUploadAnio = filasAnioData.map(row => row[3]);
-    const minUploadAnio = filasAnioData.map(row => row[4]);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Label', 'Value'],
+        ['Ping', <?= $st_ping_gauge ?>]
+      ]);
+      var options_ping = {
+        width: 220,
+        height: 220,
+        redFrom: 60,
+        redTo: 80,
+        yellowFrom: 40,
+        yellowTo: 60,
+        max: 80,
+        backgroundColor: 'transparent'
+      };
+      var chart = new google.visualization.Gauge(document.getElementById('chart_div_ping'));
+      chart.draw(data, options_ping);
 
-    const datasetsAnio = [{
-        label: 'Max Download Mbit/s',
-        data: maxDownloadAnio,
-        borderColor: '#0A83F9',
-        tension: 0.1,
-        fill: false
-    }, {
-        label: 'Min Download Mbit/s',
-        data: minDownloadAnio,
-        borderColor: '#34A84F',
-        tension: 0.1,
-        fill: false
-    }, {
-        label: 'Max Upload Mbit/s',
-        data: maxUploadAnio,
-        borderColor: '#FEBC37',
-        tension: 0.1,
-        fill: false
-    }, {
-        label: 'Min Upload Mbit/s',
-        data: minUploadAnio,
-        borderColor: '#D91A46',
-        tension: 0.1,
-        fill: false
-    }];
-    createLineChart('line_top_x_anio_canvas', 'Speed Test durante <?= $st_year ?>', 'Velocidades por dia', labelsAnio, datasetsAnio);
+      var data = google.visualization.arrayToDataTable([
+        ['Label', 'Value'],
+        ['Download', <?= $st_down_gauge ?>]
+      ])
+      var options_down = {
+        width: 220,
+        height: 220,
+        redFrom: 0,
+        redTo: 10,
+        yellowFrom: 10,
+        yellowTo: 20,
+        max: 500,
+        backgroundColor: 'transparent'
+      };
+      var chart = new google.visualization.Gauge(document.getElementById('chart_div_down'));
+      chart.draw(data, options_down);
+
+      var data = google.visualization.arrayToDataTable([
+        ['Label', 'Value'],
+        ['Upload', <?= $st_up_gauge ?>]
+      ])
+      var options_up = {
+        width: 220,
+        height: 220,
+        redFrom: 0,
+        redTo: 5,
+        yellowFrom: 5,
+        yellowTo: 10,
+        max: 500,
+        backgroundColor: 'transparent'
+      };
+      var chart = new google.visualization.Gauge(document.getElementById('chart_div_up'));
+      chart.draw(data, options_up);
+    }
   </script>
   <?php include("footer.php"); ?>
