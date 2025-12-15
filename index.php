@@ -9,17 +9,7 @@ mb_http_output('UTF-8');
 $conn = new mysqli($db_server, $db_user, $db_pass, $db_name, $db_serverport);
 mysqli_set_charset($conn, 'utf8');
 
-// --- Verificación de IP del cliente (usando sentencias preparadas) ---
-$stmt = $conn->prepare("SELECT count(*) as total FROM speedtest where st_ip = ?");
-$stmt->bind_param("s", $ip_client);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-if ($row['total'] == 0) {
-    header("Location: block.php");
-    exit();
-}
-$stmt->close();
+
 
 // --- Obtener todos los datos de las funciones centralizadas ---
 $speedtestData = getSpeedtestData($conn);
