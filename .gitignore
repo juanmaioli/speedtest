@@ -1,3 +1,5 @@
 .dev/
 config.php
 .eslintrc.json
+GEMINI.md
+.htaccess
