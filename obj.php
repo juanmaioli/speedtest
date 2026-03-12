@@ -105,34 +105,63 @@ $result = $conn->query($sql);
 
 if (mysqli_num_rows($result) == true) {
   $filas = "";
+  $chart_24h_labels = [];
+  $chart_24h_ping = [];
+  $chart_24h_down = [];
+  $chart_24h_up = [];
   while ($row = $result->fetch_assoc()) {
     $st_id = $row["st_id"];
-    $st_ping = $row["st_ping"];
-    $st_down = $row["st_down"];
-    $st_up = $row["st_up"];
+    $st_ping = (float)$row["st_ping"];
+    $st_down = (float)$row["st_down"];
+    $st_up = (float)$row["st_up"];
     $st_ip = $row["st_ip"];
     $st_date = $row["st_date"];
-    $st_date = substr($st_date, 11, 5);
-    $filas .= "['" . $st_date . "'," . $st_ping . "," . $st_down .  "," . $st_up .  "],";
+    $st_date_short = substr($st_date, 11, 5);
+    $filas .= "['" . $st_date_short . "'," . $st_ping . "," . $st_down .  "," . $st_up .  "],";
+    
+    $chart_24h_labels[] = $st_date_short;
+    $chart_24h_ping[] = $st_ping;
+    $chart_24h_down[] = $st_down;
+    $chart_24h_up[] = $st_up;
   }
 } else {
   $filas = "['" . $st_now . "',0,0,0],";
+  $chart_24h_labels = [$st_now];
+  $chart_24h_ping = [0];
+  $chart_24h_down = [0];
+  $chart_24h_up = [0];
 }
 $sql = "SELECT day(st_date) as dia,MAX(st_down) as max_down,MAX(st_up) as max_up,MIN(st_down) as min_down,MIN(st_up) as min_up
     FROM speedtest  WHERE MONTH(st_date) = " . $st_month . " AND YEAR(st_date) = " . $st_year . "  AND st_ip = '" . $ip_test . "' GROUP BY DAY(st_date)";
 $result = $conn->query($sql);
 if (mysqli_num_rows($result) == true) {
   $filas_mes = "";
+  $chart_mes_labels = [];
+  $chart_mes_max_down = [];
+  $chart_mes_min_down = [];
+  $chart_mes_max_up = [];
+  $chart_mes_min_up = [];
   while ($row = $result->fetch_assoc()) {
     $dia = $row["dia"];
-    $max_down = $row["max_down"];
-    $min_down = $row["min_down"];
-    $max_up = $row["max_up"];
-    $min_up = $row["min_up"];
+    $max_down = (float)$row["max_down"];
+    $min_down = (float)$row["min_down"];
+    $max_up = (float)$row["max_up"];
+    $min_up = (float)$row["min_up"];
     $filas_mes .= "['" . $dia . "'," . $max_down  . "," . $min_down .  "," . $max_up .  "," . $min_up . "],";
+    
+    $chart_mes_labels[] = "Día " . $dia;
+    $chart_mes_max_down[] = $max_down;
+    $chart_mes_min_down[] = $min_down;
+    $chart_mes_max_up[] = $max_up;
+    $chart_mes_min_up[] = $min_up;
   }
 } else {
   $filas_mes = "['" . $st_now . "',0,0,0],";
+  $chart_mes_labels = [$st_now];
+  $chart_mes_max_down = [0];
+  $chart_mes_min_down = [0];
+  $chart_mes_max_up = [0];
+  $chart_mes_min_up = [0];
 }
 //Gauge
 $sql = "SELECT st_ping, st_down, st_up FROM speedtest WHERE st_ip = '" . $ip_test . "' ORDER BY st_date DESC LIMIT 1";
@@ -154,16 +183,32 @@ $sql = "SELECT CONCAT (DAY( st_date ) ,'-', MONTH ( st_date )) as fecha, MAX( st
 $result = $conn->query($sql);
 if (mysqli_num_rows($result) == true) {
   $filas_anio = "";
+  $chart_anio_labels = [];
+  $chart_anio_max_down = [];
+  $chart_anio_min_down = [];
+  $chart_anio_max_up = [];
+  $chart_anio_min_up = [];
   while ($row = $result->fetch_assoc()) {
     $dia = $row["fecha"];
-    $max_down = $row["max_down"];
-    $min_down = $row["min_down"];
-    $max_up = $row["max_up"];
-    $min_up = $row["min_up"];
+    $max_down = (float)$row["max_down"];
+    $min_down = (float)$row["min_down"];
+    $max_up = (float)$row["max_up"];
+    $min_up = (float)$row["min_up"];
     $filas_anio .= "['" . $dia . "'," . $max_down  . "," . $min_down .  "," . $max_up .  "," . $min_up . "],";
+    
+    $chart_anio_labels[] = $dia;
+    $chart_anio_max_down[] = $max_down;
+    $chart_anio_min_down[] = $min_down;
+    $chart_anio_max_up[] = $max_up;
+    $chart_anio_min_up[] = $min_up;
   }
 } else {
   $filas_anio = "['" . $st_now . "',0,0,0],";
+  $chart_anio_labels = [$st_now];
+  $chart_anio_max_down = [0];
+  $chart_anio_min_down = [0];
+  $chart_anio_max_up = [0];
+  $chart_anio_min_up = [0];
 }
 $conn->close();
 include("header.php");
@@ -172,15 +217,15 @@ include("header.php");
     <div class="row mt-2">
       <div class="col-md-1"></div>
       <div class="col-md-10">
-        <div class="card shadow-night-sm">
-          <div class="card-header">
+        <div class="card border-0 shadow-sm bg-body-tertiary">
+          <div class="card-header border-0 bg-body-tertiary">
             <div class="row">
               <div class="col-md-1 text-center"><a href="index.php" class="btn btn-success"><i class="fa-regular fa-home fa-fw fa-lg"></i></a></div>
               <div class="col-md-7">
                 <h2 class='text-success'><img src="images/speedometer.svg" class="" width="50px" /> Speed Test de <span class="text-primary"><?= $ip_name ?></span></h2>
                 <span class="text-primary">(Su IP: <?= $ip_client ?>)</span>
               </div>
-              <div class="col-md-2 text-end"><label class="">Cambiar a Estadísticas de la IP: </label></div>
+              <div class="col-md-2 text-end"><label class="">Cambiar a la IP: </label></div>
               <div class="col-md-2 text-end">
                 <form action='obj.php' method='post'><?= $st_ip_list ?></form>
               </div>
@@ -194,13 +239,19 @@ include("header.php");
             </div>
             <div class="row mt-3">
               <div class="col-md-4">
-                <div id="chart_div_ping" class="border p-3 shadow-purple-md rounded" align='center'></div>
+                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                  <canvas id="gauge_ping" height="200"></canvas>
+                </div>
               </div>
               <div class="col-md-4">
-                <div id="chart_div_down" class="border p-3 shadow-darkblue-md rounded" align='center'></div>
+                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                  <canvas id="gauge_down" height="200"></canvas>
+                </div>
               </div>
               <div class="col-md-4">
-                <div id="chart_div_up" class="border p-3 shadow-orange-md rounded" align='center'></div>
+                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                  <canvas id="gauge_up" height="200"></canvas>
+                </div>
               </div>
             </div>
           </div>
@@ -212,14 +263,18 @@ include("header.php");
     <div class="row mt-3">
       <div class="col-md-1"></div>
       <div class="col-md-10">
-        <div class="card shadow-night-sm">
+        <div class="card border-0 shadow-sm bg-body-tertiary">
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
-                <div id="line_top_x" class="border p-3 shadow-darkmagenta-md rounded"></div>
+                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                  <canvas id="line_24h" height="400"></canvas>
+                </div>
               </div>
               <div class="col-md-6">
-                <div id="line_top_x_mes" class="border p-3 shadow-darkmagenta-md rounded"></div>
+                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                  <canvas id="line_mes" height="400"></canvas>
+                </div>
               </div>
             </div>
           </div>
@@ -230,11 +285,13 @@ include("header.php");
     <div class="row mt-3">
       <div class="col-md-1"></div>
       <div class="col-md-10">
-        <div class="card shadow-night-sm">
+        <div class="card border-0 shadow-sm bg-body-tertiary">
           <div class="card-body">
             <div class="row">
               <div class="col-md-12">
-                <div id="line_top_x_anio" class="border p-3 shadow-darkmagenta-md rounded"></div>
+                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                   <canvas id="line_anio" height="400"></canvas>
+                </div>
               </div>
             </div>
           </div>
@@ -249,167 +306,91 @@ include("header.php");
     </div>
   </div>
   <br><br><br>
-  <script type="text/javascript">
-    google.charts.load('current', {
-      'packages': ['line']
+  <script>
+    // Configuración común para Gauges
+    const gaugeOptions = (title, max) => ({
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [0, max],
+          backgroundColor: ['rgba(10, 131, 249, 0.7)', 'rgba(0, 0, 0, 0.1)'],
+          borderWidth: 0,
+          circumference: 180,
+          rotation: 270,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: { display: true, text: title },
+          tooltip: { enabled: false },
+          legend: { display: false }
+        }
+      }
     });
-    google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
-      let data = new google.visualization.DataTable();
-      data.addColumn('string', 'Hora');
-      data.addColumn('number', 'Ping ms');
-      data.addColumn('number', 'Download Mbit/s');
-      data.addColumn('number', 'Upload Mbit/s');
-      data.addRows([<?= $filas ?>]);
-      let options = {
-        chart: {
-          title: 'Speed Test Últmas 24hs',
-          subtitle: 'Velocidades por hora',
-          legend: 'none',
-          backgroundColor: 'transparent'
-        },
-        height: 400,
-        axes: {
-          x: {
-            0: {
-              side: 'buttom'
-            }
-          }
-        },
-        colors: ['#34A84F', '#0A83F9', '#FEBC37']
-      };
-      var chart = new google.charts.Line(document.getElementById('line_top_x'));
-      chart.draw(data, google.charts.Line.convertOptions(options));
-    }
-  </script>
-  <script type="text/javascript">
-    google.charts.load('current', {
-      'packages': ['line']
+    // Gauge Ping
+    const ctxGP = document.getElementById('gauge_ping').getContext('2d');
+    const gaugePing = new Chart(ctxGP, gaugeOptions('Ping (ms)', 100));
+    gaugePing.data.datasets[0].data = [<?= $st_ping_gauge ?>, 100 - <?= $st_ping_gauge ?>];
+    gaugePing.data.datasets[0].backgroundColor = [<?= $st_ping_gauge ?> > 60 ? 'rgba(217, 26, 70, 0.7)' : 'rgba(10, 131, 249, 0.7)', 'rgba(0, 0, 0, 0.1)'];
+    gaugePing.update();
+
+    // Gauge Download
+    const ctxGD = document.getElementById('gauge_down').getContext('2d');
+    const gaugeDown = new Chart(ctxGD, gaugeOptions('Download (Mb/s)', 1000));
+    gaugeDown.data.datasets[0].data = [<?= $st_down_gauge ?>, 1000 - <?= $st_down_gauge ?>];
+    gaugeDown.update();
+
+    // Gauge Upload
+    const ctxGU = document.getElementById('gauge_up').getContext('2d');
+    const gaugeUp = new Chart(ctxGU, gaugeOptions('Upload (Mb/s)', 1000));
+    gaugeUp.data.datasets[0].data = [<?= $st_up_gauge ?>, 1000 - <?= $st_up_gauge ?>];
+    gaugeUp.update();
+
+    // Line Chart 24h
+    new Chart(document.getElementById('line_24h').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: <?= json_encode($chart_24h_labels) ?>,
+        datasets: [
+          { label: 'Ping', data: <?= json_encode($chart_24h_ping) ?>, borderColor: '#34A84F', fill: false, tension: 0.1 },
+          { label: 'Download', data: <?= json_encode($chart_24h_down) ?>, borderColor: '#0A83F9', fill: false, tension: 0.1 },
+          { label: 'Upload', data: <?= json_encode($chart_24h_up) ?>, borderColor: '#FEBC37', fill: false, tension: 0.1 }
+        ]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Últimas 24hs' } } }
     });
-    google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Dia');
-      data.addColumn('number', 'Max Download Mbit/s');
-      data.addColumn('number', 'Min Download Mbit/s');
-      data.addColumn('number', 'Max Upload Mbit/s');
-      data.addColumn('number', 'Min Upload Mbit/s');
-      data.addRows([<?= $filas_mes ?>]);
-
-      var options = {
-        chart: {
-          title: 'Speed Test durante <?= $mesGraph ?> de <?= $st_year ?>',
-          subtitle: 'Velocidades por hora',
-          backgroundColor: 'transparent'
-        },
-        height: 400,
-        axes: {
-          x: {
-            0: {
-              side: 'buttom'
-            }
-          }
-        },
-        colors: ['#0A83F9', '#34A84F', '#FEBC37', '#D91A46']
-      };
-      var chart = new google.charts.Line(document.getElementById('line_top_x_mes'));
-      chart.draw(data, google.charts.Line.convertOptions(options));
-    }
-  </script>
-  <script type="text/javascript">
-    google.charts.load('current', {
-      'packages': ['line']
+    // Line Chart Mes
+    new Chart(document.getElementById('line_mes').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: <?= json_encode($chart_mes_labels) ?>,
+        datasets: [
+          { label: 'Max Download', data: <?= json_encode($chart_mes_max_down) ?>, borderColor: '#0A83F9', fill: false },
+          { label: 'Min Download', data: <?= json_encode($chart_mes_min_down) ?>, borderColor: '#34A84F', fill: false },
+          { label: 'Max Upload', data: <?= json_encode($chart_mes_max_up) ?>, borderColor: '#FEBC37', fill: false },
+          { label: 'Min Upload', data: <?= json_encode($chart_mes_min_up) ?>, borderColor: '#D91A46', fill: false }
+        ]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Mes Actual' } } }
     });
-    google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Fecha');
-      data.addColumn('number', 'Max Download Mbit/s');
-      data.addColumn('number', 'Min Download Mbit/s');
-      data.addColumn('number', 'Max Upload Mbit/s');
-      data.addColumn('number', 'Min Upload Mbit/s');
-      data.addRows([<?= $filas_anio ?>]);
-
-      var options = {
-        chart: {
-          title: 'Speed Test durante <?= $st_year ?>',
-          subtitle: 'Velocidades por dia',
-          backgroundColor: 'transparent'
-        },
-        height: 400,
-        axes: {
-          x: {
-            0: {
-              side: 'buttom'
-            }
-          }
-        },
-        colors: ['#0A83F9', '#34A84F', '#FEBC37', '#D91A46']
-      };
-      var chart = new google.charts.Line(document.getElementById('line_top_x_anio'));
-      chart.draw(data, google.charts.Line.convertOptions(options));
-    }
-  </script>
-  <script type="text/javascript">
-    google.charts.load('current', {
-      'packages': ['gauge']
+    // Line Chart Anual
+    new Chart(document.getElementById('line_anio').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: <?= json_encode($chart_anio_labels) ?>,
+        datasets: [
+          { label: 'Max Download', data: <?= json_encode($chart_anio_max_down) ?>, borderColor: '#0A83F9', fill: false },
+          { label: 'Min Download', data: <?= json_encode($chart_anio_min_down) ?>, borderColor: '#34A84F', fill: false },
+          { label: 'Max Upload', data: <?= json_encode($chart_anio_max_up) ?>, borderColor: '#FEBC37', fill: false },
+          { label: 'Min Upload', data: <?= json_encode($chart_anio_min_up) ?>, borderColor: '#D91A46', fill: false }
+        ]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Reporte Anual' } } }
     });
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Label', 'Value'],
-        ['Ping', <?= $st_ping_gauge ?>]
-      ]);
-      var options_ping = {
-        width: 220,
-        height: 220,
-        redFrom: 60,
-        redTo: 80,
-        yellowFrom: 40,
-        yellowTo: 60,
-        max: 80,
-        backgroundColor: 'transparent'
-      };
-      var chart = new google.visualization.Gauge(document.getElementById('chart_div_ping'));
-      chart.draw(data, options_ping);
-
-      var data = google.visualization.arrayToDataTable([
-        ['Label', 'Value'],
-        ['Download', <?= $st_down_gauge ?>]
-      ])
-      var options_down = {
-        width: 220,
-        height: 220,
-        redFrom: 0,
-        redTo: 10,
-        yellowFrom: 10,
-        yellowTo: 20,
-        max: 500,
-        backgroundColor: 'transparent'
-      };
-      var chart = new google.visualization.Gauge(document.getElementById('chart_div_down'));
-      chart.draw(data, options_down);
-
-      var data = google.visualization.arrayToDataTable([
-        ['Label', 'Value'],
-        ['Upload', <?= $st_up_gauge ?>]
-      ])
-      var options_up = {
-        width: 220,
-        height: 220,
-        redFrom: 0,
-        redTo: 5,
-        yellowFrom: 5,
-        yellowTo: 10,
-        max: 500,
-        backgroundColor: 'transparent'
-      };
-      var chart = new google.visualization.Gauge(document.getElementById('chart_div_up'));
-      chart.draw(data, options_up);
-    }
   </script>
   <?php include("footer.php"); ?>

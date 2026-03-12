@@ -4,7 +4,11 @@ function getSpeedtestData($conn) {
         'bars_data' => '',
         'bars_data_ping' => '',
         'data_last' => '',
-        'data_list_for_json' => []
+        'data_list_for_json' => [],
+        'chart_labels' => [],
+        'chart_down' => [],
+        'chart_up' => [],
+        'chart_ping' => []
     ];
 
     $st_date_diff = new DateTime(date("Y-m-d H:i:s"));
@@ -42,6 +46,12 @@ function getSpeedtestData($conn) {
             // --- Preparar datos para Gráficos de Google ---
             $output['bars_data'] .= "['" . $ip_name . "\n" . $st_ip . "\n" . $st_date . "' ,$st_down ,$st_up],";
             $output['bars_data_ping'] .= "['" . $ip_name . "' ,$st_ping],";
+
+            // --- Preparar datos para Chart.js ---
+            $output['chart_labels'][] = $ip_name;
+            $output['chart_down'][] = (float)$st_down;
+            $output['chart_up'][] = (float)$st_up;
+            $output['chart_ping'][] = (float)$st_ping;
 
             // --- Preparar datos para la sección "Último Reporte" ---
             $st_report_date = $st_date_diff->diff(new DateTime($st_date));
@@ -88,35 +98,35 @@ function getAvgTables($conn) {
     // --- Tabla de promedios de Download ---
     $sql_down = "SELECT ips.ip_name, speedtest.st_ip, round(Avg(speedtest.st_down), 1) AS PromDownload FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number WHERE ips.ip_delete = 0 GROUP BY speedtest.st_ip ORDER BY PromDownload DESC";
     $result_down = $conn->query($sql_down);
-    $table_down = "<table class='table table-striped table-hover table-sm'><thead><th colspan='2'>AVG Download</th></thead>";
+    $table_down = "<div class='table-responsive shadow-sm rounded border border-secondary-subtle bg-body'><table class='table table-striped table-hover table-sm mb-0'><thead><th colspan='2'>AVG Download</th></thead>";
     if ($result_down) {
         while ($row = $result_down->fetch_assoc()) {
             $table_down .= "<tr><td>" . htmlspecialchars($row["ip_name"]) . " (" . htmlspecialchars($row["st_ip"]) . ")</td><td>" . $row["PromDownload"] . "</td></tr>";
         }
     }
-    $output['table_down'] = $table_down . "</table>";
+    $output['table_down'] = $table_down . "</table></div>";
 
     // --- Tabla de promedios de Upload ---
     $sql_up = "SELECT ips.ip_name, st_ip, round(avg(st_up), 1) AS PromUpload FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number WHERE ips.ip_delete = 0 GROUP BY st_ip ORDER BY PromUpload DESC";
     $result_up = $conn->query($sql_up);
-    $table_up = "<table class='table table-striped table-hover table-sm'><thead><th colspan='2'>AVG Upload</th></thead>";
+    $table_up = "<div class='table-responsive shadow-sm rounded border border-secondary-subtle bg-body'><table class='table table-striped table-hover table-sm mb-0'><thead><th colspan='2'>AVG Upload</th></thead>";
      if ($result_up) {
         while ($row = $result_up->fetch_assoc()) {
             $table_up .= "<tr><td>" . htmlspecialchars($row["ip_name"]) . " (" . htmlspecialchars($row["st_ip"]) . ")</td><td>" . $row["PromUpload"] . "</td></tr>";
         }
     }
-    $output['table_up'] = $table_up . "</table>";
+    $output['table_up'] = $table_up . "</table></div>";
 
     // --- Tabla de promedios de Ping ---
     $sql_ping = "SELECT ips.ip_name, st_ip, round(avg(st_ping), 1) AS PromPing FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number WHERE ips.ip_delete = 0 GROUP BY st_ip ORDER BY PromPing ASC";
     $result_ping = $conn->query($sql_ping);
-    $table_ping = "<table class='table table-striped table-hover table-sm'><thead><th colspan='2'>AVG Ping</th></thead>";
+    $table_ping = "<div class='table-responsive shadow-sm rounded border border-secondary-subtle bg-body'><table class='table table-striped table-hover table-sm mb-0'><thead><th colspan='2'>AVG Ping</th></thead>";
     if ($result_ping) {
         while ($row = $result_ping->fetch_assoc()) {
             $table_ping .= "<tr><td>" . htmlspecialchars($row["ip_name"]) . " (" . htmlspecialchars($row["st_ip"]) . ")</td><td>" . $row["PromPing"] . "</td></tr>";
         }
     }
-    $output['table_ping'] = $table_ping . "</table>";
+    $output['table_ping'] = $table_ping . "</table></div>";
 
     return $output;
 }

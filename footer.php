@@ -7,15 +7,13 @@
     </div>
     <div class="col-10 text-center">
       <a href="https://juanmaioli.com.ar" class="text-decoration-none" target="_blank">
-        <h6 class="text-white mt-2 fa-beat float-right m-2" style="--fa-animation-duration: 5s; --fa-fade-opacity: 0.1;  --fa-beat-scale: 0.8;">
+        <h6 class="text-body-secondary mt-2 fa-beat float-right m-2" style="--fa-animation-duration: 5s; --fa-fade-opacity: 0.1;  --fa-beat-scale: 0.8;">
           <i class="fa-regular fa-code"></i>&nbsp;juanmaioli.com.ar
         </h6>
       </a>
     </div>
     <div class="col-1">
-      <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" role="switch" id="switchTableCard" onchange="changeView()">
-      <label class="form-check-label text-white" id="switchTableCardLabel" for="switchTableCard" onclick="document.getElementById('switchTableCard').toogle"><i class="fa-regular fa-sun fa-fw fa-2x"></i></label>  
+
     </div>
     </div>
   </div>

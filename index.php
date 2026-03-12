@@ -33,7 +33,7 @@ include("header.php");
     <div class="row mt-2">
       <div class="col-md-1"></div>
       <div class="col-md-10">
-        <div class="card shadow-night-sm">
+        <div class="card border-0 shadow-sm bg-body-tertiary mb-5">
           <div class="card-header">
             <div class="row">
               <div class="col-md-12">
@@ -45,7 +45,7 @@ include("header.php");
           <div class="card-body">
             <div class="row mt-3">
               <div class="col-md">
-                <div class="border p-3 shadow-darkmagenta-md rounded">
+                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
                   <div class="row"><?= $data_last ?></div>
                 </div>
               </div>
@@ -53,10 +53,14 @@ include("header.php");
             </div>
             <div class="row mt-3">
               <div class="col-md-8">
-                <div id="bars_last_test" class="border p-3 shadow-darkmagenta-md rounded"></div>
+                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                  <canvas id="chart_down_up" height="400"></canvas>
+                </div>
               </div>
               <div class="col-md-4">
-                <div id="bars_last_ping" class="border p-3 shadow-darkmagenta-md rounded"></div>
+                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                  <canvas id="chart_ping" height="400"></canvas>
+                </div>
               </div>
             </div>
             <div class="row mt-5">
@@ -71,59 +75,65 @@ include("header.php");
     </div>
   </div>
   <br><br><br>
-  <script type="text/javascript">
-    google.charts.load('current', {
-      'packages': ['bar']
-    });
-    google.charts.setOnLoadCallback(drawChart);
+  <script>
+    const labels = <?= json_encode($speedtestData['chart_labels']) ?>;
+    const dataDown = <?= json_encode($speedtestData['chart_down']) ?>;
+    const dataUp = <?= json_encode($speedtestData['chart_up']) ?>;
+    const dataPing = <?= json_encode($speedtestData['chart_ping']) ?>;
 
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Server', 'Download', 'Upload'],
-        <?= $bars_data ?>
-      ]);
-
-      var options = {
-        bars: 'horizontal',
-        height: 600,
-        chart: {
-          title: 'Speedtest de todos los Servers',
-          subtitle: 'Download y Upload según último reporte',
-          backgroundColor: 'transparent'
-        }
-      };
-
-      var chart = new google.charts.Bar(document.getElementById('bars_last_test'));
-
-      chart.draw(data, google.charts.Bar.convertOptions(options));
-    }
-  </script>
-  <script type="text/javascript">
-    google.charts.load('current', {
-      'packages': ['bar']
-    });
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Server', 'Ping'],
-        <?= $bars_data_ping ?>
-      ]);
-
-      var options = {
-        title: 'Ping de todos los Servers',
-        bars: 'horizontal',
-        hAxis: {
-          title: 'Server'
+    const ctxDownUp = document.getElementById('chart_down_up').getContext('2d');
+    new Chart(ctxDownUp, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Download (Mb/s)',
+          data: dataDown,
+          backgroundColor: 'rgba(10, 131, 249, 0.7)',
+          borderColor: 'rgba(10, 131, 249, 1)',
+          borderWidth: 1
+        }, {
+          label: 'Upload (Mb/s)',
+          data: dataUp,
+          backgroundColor: 'rgba(52, 168, 79, 0.7)',
+          borderColor: 'rgba(52, 168, 79, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: { display: true, text: 'Download y Upload por Servidor' }
         },
-        height: 600,
-        backgroundColor: 'transparent'
-      };
+        scales: { x: { beginAtZero: true } }
+      }
+    });
 
-      var chart = new google.charts.Bar(document.getElementById('bars_last_ping'));
-
-      chart.draw(data, google.charts.Bar.convertOptions(options));
-    }
+    const ctxPing = document.getElementById('chart_ping').getContext('2d');
+    new Chart(ctxPing, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Ping (ms)',
+          data: dataPing,
+          backgroundColor: 'rgba(254, 188, 55, 0.7)',
+          borderColor: 'rgba(254, 188, 55, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: { display: true, text: 'Ping por Servidor' }
+        },
+        scales: { x: { beginAtZero: true } }
+      }
+    });
   </script>
   <script>
     setInterval(obtener_json, 60000);
