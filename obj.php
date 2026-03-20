@@ -218,38 +218,53 @@ include("header.php");
       <div class="col-md-1"></div>
       <div class="col-md-10">
         <div class="card border-0 shadow-sm bg-body-tertiary">
-          <div class="card-header border-0 bg-body-tertiary">
-            <div class="row">
-              <div class="col-md-1 text-center"><a href="index.php" class="btn btn-success"><i class="fa-regular fa-home fa-fw fa-lg"></i></a></div>
-              <div class="col-md-7">
-                <h2 class='text-success'><img src="images/speedometer.svg" class="" width="50px" /> Speed Test de <span class="text-primary"><?= $ip_name ?></span></h2>
-                <span class="text-primary">(Su IP: <?= $ip_client ?>)</span>
+          <div class="card-header border-0 bg-transparent pt-4">
+            <div class="row align-items-center">
+              <div class="col-md-1 text-center">
+                <a href="index.php" class="btn btn-outline-success shadow-sm rounded-3"><i class="fa-regular fa-arrow-left fa-fw"></i></a>
               </div>
-              <div class="col-md-2 text-end"><label class="">Cambiar a la IP: </label></div>
-              <div class="col-md-2 text-end">
-                <form action='obj.php' method='post'><?= $st_ip_list ?></form>
+              <div class="col-md-7">
+                <h2 class='text-darkmagenta fw-bold mb-0'>
+                  <img src="images/speedometer.svg" class="me-1" width="50px" /> 
+                  Reporte Detallado 📊
+                </h2>
+                <p class="text-muted mb-0">
+                  Nodo: <span class="text-primary fw-bold"><?= $ip_name ?></span>
+                </p>
+              </div>
+              <div class="col-md-4 text-md-end">
+                <form action='obj.php' method='post' class="d-inline-block w-75">
+                  <div class="input-group input-group-sm shadow-sm">
+                    <span class="input-group-text bg-light border-secondary-subtle"><i class="fa-solid fa-desktop"></i></span>
+                    <?= $st_ip_list ?>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
-          <div class="card-body">
+          <div class="card-body px-4">
             <div class="row">
-              <div class="col-md-12 text-center">
-                <h2 class='text-primary'>Último Reporte: <?= $last_report ?></h2>
+              <div class="col-md-12 text-center py-3 bg-indigo rounded-4 mb-4 shadow-light-sm border border-secondary-subtle">
+                <h4 class='text-white mb-1'><i class="fa-regular fa-clock-rotate-left me-2"></i>Último Reporte</h4>
+                <h2 class="text-white fw-bold font-monospace"><?= $last_report ?></h2>
               </div>
             </div>
-            <div class="row mt-3">
+            <div class="row g-4 mt-1">
               <div class="col-md-4 text-center">
-                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                <div class="bg-body p-4 shadow-sm rounded-4 border border-secondary-subtle h-100">
+                  <h5 class="text-secondary mb-3">⚡ Latencia (Ping)</h5>
                   <canvas id="gauge_ping" height="200"></canvas>
                 </div>
               </div>
               <div class="col-md-4 text-center">
-                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                <div class="bg-body p-4 shadow-sm rounded-4 border border-secondary-subtle h-100">
+                  <h5 class="text-secondary mb-3">⬇️ Descarga (Download)</h5>
                   <canvas id="gauge_down" height="200"></canvas>
                 </div>
               </div>
               <div class="col-md-4 text-center">
-                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+                <div class="bg-body p-4 shadow-sm rounded-4 border border-secondary-subtle h-100">
+                  <h5 class="text-secondary mb-3">⬆️ Carga (Upload)</h5>
                   <canvas id="gauge_up" height="200"></canvas>
                 </div>
               </div>

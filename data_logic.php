@@ -63,12 +63,13 @@ function getSpeedtestData($conn) {
             $json_color = ($diff_minutes > 59) ? "danger" : "success";
             
             $output['data_last'] .= "
-                <div class='col text-center'>
+                <div class='col text-center mb-2'>
                     <form action='obj.php' method='post'>
                         <input type='hidden' id='ip_test' name='ip_test' value='$st_ip'>
                         <div id='$st_ip'>
-                            <button class='btn $color btn-block'>
-                                $ip_name<br>Hace $diff_minutes min.
+                            <button class='btn $color w-100 shadow-sm border-0 py-2'>
+                                <i class='fa-solid fa-server me-1'></i> <strong>$ip_name</strong><br>
+                                <small><i class='fa-regular fa-clock me-1'></i>Hace $diff_minutes min.</small>
                             </button>
                         </div>
                     </form>
@@ -98,10 +99,10 @@ function getAvgTables($conn) {
     // --- Tabla de promedios de Download ---
     $sql_down = "SELECT ips.ip_name, speedtest.st_ip, round(Avg(speedtest.st_down), 1) AS PromDownload FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number WHERE ips.ip_delete = 0 GROUP BY speedtest.st_ip ORDER BY PromDownload DESC";
     $result_down = $conn->query($sql_down);
-    $table_down = "<div class='table-responsive shadow-sm rounded border border-secondary-subtle bg-body'><table class='table table-striped table-hover table-sm mb-0'><thead><th colspan='2'>AVG Download</th></thead>";
+    $table_down = "<div class='table-responsive shadow-sm rounded border-0 bg-body'><table class='table table-striped table-hover table-sm mb-0'><thead><tr class='table-primary'><th colspan='2' class='text-center'>⬇️ AVG Download (Mbps)</th></tr></thead>";
     if ($result_down) {
         while ($row = $result_down->fetch_assoc()) {
-            $table_down .= "<tr><td>" . htmlspecialchars($row["ip_name"]) . " (" . htmlspecialchars($row["st_ip"]) . ")</td><td>" . $row["PromDownload"] . "</td></tr>";
+            $table_down .= "<tr><td class='ps-3'>" . htmlspecialchars($row["ip_name"]) . " <small class='text-muted'>(" . htmlspecialchars($row["st_ip"]) . ")</small></td><td class='text-end pe-3 font-monospace fw-bold'>" . $row["PromDownload"] . "</td></tr>";
         }
     }
     $output['table_down'] = $table_down . "</table></div>";
@@ -109,10 +110,10 @@ function getAvgTables($conn) {
     // --- Tabla de promedios de Upload ---
     $sql_up = "SELECT ips.ip_name, st_ip, round(avg(st_up), 1) AS PromUpload FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number WHERE ips.ip_delete = 0 GROUP BY st_ip ORDER BY PromUpload DESC";
     $result_up = $conn->query($sql_up);
-    $table_up = "<div class='table-responsive shadow-sm rounded border border-secondary-subtle bg-body'><table class='table table-striped table-hover table-sm mb-0'><thead><th colspan='2'>AVG Upload</th></thead>";
+    $table_up = "<div class='table-responsive shadow-sm rounded border-0 bg-body'><table class='table table-striped table-hover table-sm mb-0'><thead><tr class='table-success'><th colspan='2' class='text-center'>⬆️ AVG Upload (Mbps)</th></tr></thead>";
      if ($result_up) {
         while ($row = $result_up->fetch_assoc()) {
-            $table_up .= "<tr><td>" . htmlspecialchars($row["ip_name"]) . " (" . htmlspecialchars($row["st_ip"]) . ")</td><td>" . $row["PromUpload"] . "</td></tr>";
+            $table_up .= "<tr><td class='ps-3'>" . htmlspecialchars($row["ip_name"]) . " <small class='text-muted'>(" . htmlspecialchars($row["st_ip"]) . ")</small></td><td class='text-end pe-3 font-monospace fw-bold'>" . $row["PromUpload"] . "</td></tr>";
         }
     }
     $output['table_up'] = $table_up . "</table></div>";
@@ -120,10 +121,10 @@ function getAvgTables($conn) {
     // --- Tabla de promedios de Ping ---
     $sql_ping = "SELECT ips.ip_name, st_ip, round(avg(st_ping), 1) AS PromPing FROM speedtest INNER JOIN ips ON speedtest.st_ip = ips.ip_number WHERE ips.ip_delete = 0 GROUP BY st_ip ORDER BY PromPing ASC";
     $result_ping = $conn->query($sql_ping);
-    $table_ping = "<div class='table-responsive shadow-sm rounded border border-secondary-subtle bg-body'><table class='table table-striped table-hover table-sm mb-0'><thead><th colspan='2'>AVG Ping</th></thead>";
+    $table_ping = "<div class='table-responsive shadow-sm rounded border-0 bg-body'><table class='table table-striped table-hover table-sm mb-0'><thead><tr class='table-warning'><th colspan='2' class='text-center'>⚡ AVG Ping (ms)</th></tr></thead>";
     if ($result_ping) {
         while ($row = $result_ping->fetch_assoc()) {
-            $table_ping .= "<tr><td>" . htmlspecialchars($row["ip_name"]) . " (" . htmlspecialchars($row["st_ip"]) . ")</td><td>" . $row["PromPing"] . "</td></tr>";
+            $table_ping .= "<tr><td class='ps-3'>" . htmlspecialchars($row["ip_name"]) . " <small class='text-muted'>(" . htmlspecialchars($row["st_ip"]) . ")</small></td><td class='text-end pe-3 font-monospace fw-bold'>" . $row["PromPing"] . "</td></tr>";
         }
     }
     $output['table_ping'] = $table_ping . "</table></div>";

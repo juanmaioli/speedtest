@@ -34,39 +34,65 @@ include("header.php");
       <div class="col-md-1"></div>
       <div class="col-md-10">
         <div class="card border-0 shadow-sm bg-body-tertiary mb-5">
-          <div class="card-header">
-            <div class="row">
-              <div class="col-md-12">
-                <h2 class='text-darkmagenta'><img src="images/speedometer.svg" class="" width="50px" /> Resumén SpeedTest</h2>
-                <span class="text-primary">(Su IP: <?= htmlspecialchars($ip_client) ?>)</span>
+          <div class="card-header border-0 bg-transparent pt-4">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h1 class='text-darkmagenta fw-bold mb-0'>
+                  <img src="images/speedometer.svg" class="me-2" width="60px" /> 
+                  Resumen de Conectividad 🌐
+                </h1>
+                <p class="text-muted mb-0 ms-1">
+                  <i class="fa-solid fa-location-dot me-1"></i> Su IP actual: <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><?= htmlspecialchars($ip_client) ?></span>
+                </p>
+              </div>
+              <div class="col-md-4 text-md-end">
+                <div class="badge bg-success-subtle text-success p-2 border border-success-subtle">
+                  <i class="fa-solid fa-circle-check me-1"></i> Sistema Operativo
+                </div>
               </div>
             </div>
           </div>
-          <div class="card-body">
-            <div class="row mt-3">
-              <div class="col-md">
-                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
-                  <div class="row"><?= $data_last ?></div>
+          <div class="card-body px-4">
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <div class="bg-body border-0 p-4 shadow-sm rounded-4 mb-4">
+                  <h5 class="text-secondary mb-3"><i class="fa-solid fa-network-wired me-2"></i>Estado de los Nodos</h5>
+                  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+                    <?= $data_last ?>
+                  </div>
                 </div>
               </div>
-
             </div>
-            <div class="row mt-3">
-              <div class="col-md-8">
-                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+
+            <div class="row g-4">
+              <div class="col-lg-8">
+                <div class="bg-body p-3 shadow-sm rounded-4 border border-secondary-subtle h-100">
                   <canvas id="chart_down_up" height="400"></canvas>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
+              <div class="col-lg-4">
+                <div class="bg-body p-3 shadow-sm rounded-4 border border-secondary-subtle h-100">
                   <canvas id="chart_ping" height="400"></canvas>
                 </div>
               </div>
             </div>
-            <div class="row mt-5">
-              <div class="col-md"><?= $table_down ?></div>
-              <div class="col-md"><?= $table_up ?></div>
-              <div class="col-md"><?= $table_ping ?></div>
+
+            <div class="row mt-4 g-4 mb-3">
+              <div class="col-md-4">
+                <div class="h-100">
+                  <?= $table_down ?>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="h-100">
+                  <?= $table_up ?>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="h-100">
+                  <?= $table_ping ?>
+                </div>
+              </div>
             </div>
           </div>
         </div>
