@@ -10,7 +10,8 @@ Panel de control centralizado para el monitoreo de velocidad de internet desde m
 
 ## 🚀 Características Principales
 
-- 📈 **Gráficos en Tiempo Real:** Visualización dinámica de Download, Upload y Ping mediante Google Charts.
+- 📉 **Medidores Radiales Dinámicos:** Nuevos gauges personalizados en `obj.php` usando `gauge.js` para Ping, Download y Upload.
+- 📈 **Gráficos Históricos:** Visualización de tendencias de las últimas 24hs, mensual y anual mediante Chart.js.
 - 🏢 **Monitoreo Multinodo:** Soporta múltiples servidores o IPs registradas.
 - ⏱️ **Estadísticas de Promedio:** Tablas calculadas automáticamente para ver el rendimiento histórico.
 - 🟢 **Indicadores de Estado:** Semáforo visual para saber si un nodo está reportando correctamente.

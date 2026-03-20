@@ -238,17 +238,17 @@ include("header.php");
               </div>
             </div>
             <div class="row mt-3">
-              <div class="col-md-4">
+              <div class="col-md-4 text-center">
                 <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
                   <canvas id="gauge_ping" height="200"></canvas>
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-4 text-center">
                 <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
                   <canvas id="gauge_down" height="200"></canvas>
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-4 text-center">
                 <div class="border border-secondary-subtle p-3 shadow-sm rounded bg-body">
                   <canvas id="gauge_up" height="200"></canvas>
                 </div>
@@ -306,48 +306,43 @@ include("header.php");
     </div>
   </div>
   <br><br><br>
+  <script src="js/gauge.js"></script>
   <script>
-    // Configuración común para Gauges
-    const gaugeOptions = (title, max) => ({
-      type: 'doughnut',
-      data: {
-        datasets: [{
-          data: [0, max],
-          backgroundColor: ['rgba(10, 131, 249, 0.7)', 'rgba(0, 0, 0, 0.1)'],
-          borderWidth: 0,
-          circumference: 180,
-          rotation: 270,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          title: { display: true, text: title },
-          tooltip: { enabled: false },
-          legend: { display: false }
-        }
-      }
+    // Gauge Ping
+    gaugeDraw('gauge_ping', <?= $st_ping_gauge ?>, {
+      min: 0,
+      max: 100,
+      unit: " ms",
+      colors: [
+        { max: 20, color: "#28A745" }, // Verde (Excelente)
+        { max: 50, color: "#FFC107" }, // Amarillo (Aceptable)
+        { max: Infinity, color: "#DC3545" } // Rojo (Malo)
+      ]
     });
 
-    // Gauge Ping
-    const ctxGP = document.getElementById('gauge_ping').getContext('2d');
-    const gaugePing = new Chart(ctxGP, gaugeOptions('Ping (ms)', 100));
-    gaugePing.data.datasets[0].data = [<?= $st_ping_gauge ?>, 100 - <?= $st_ping_gauge ?>];
-    gaugePing.data.datasets[0].backgroundColor = [<?= $st_ping_gauge ?> > 60 ? 'rgba(217, 26, 70, 0.7)' : 'rgba(10, 131, 249, 0.7)', 'rgba(0, 0, 0, 0.1)'];
-    gaugePing.update();
-
     // Gauge Download
-    const ctxGD = document.getElementById('gauge_down').getContext('2d');
-    const gaugeDown = new Chart(ctxGD, gaugeOptions('Download (Mb/s)', 1000));
-    gaugeDown.data.datasets[0].data = [<?= $st_down_gauge ?>, 1000 - <?= $st_down_gauge ?>];
-    gaugeDown.update();
+    gaugeDraw('gauge_down', <?= $st_down_gauge ?>, {
+      min: 0,
+      max: 1000,
+      unit: " Mbps",
+      colors: [
+        { max: 100, color: "#DC3545" }, // Rojo (Lento)
+        { max: 300, color: "#FFC107" }, // Amarillo (Medio)
+        { max: Infinity, color: "#007BFF" } // Azul (Rápido)
+      ]
+    });
 
     // Gauge Upload
-    const ctxGU = document.getElementById('gauge_up').getContext('2d');
-    const gaugeUp = new Chart(ctxGU, gaugeOptions('Upload (Mb/s)', 1000));
-    gaugeUp.data.datasets[0].data = [<?= $st_up_gauge ?>, 1000 - <?= $st_up_gauge ?>];
-    gaugeUp.update();
+    gaugeDraw('gauge_up', <?= $st_up_gauge ?>, {
+      min: 0,
+      max: 1000,
+      unit: " Mbps",
+      colors: [
+        { max: 50, color: "#DC3545" }, // Rojo (Lento)
+        { max: 150, color: "#FFC107" }, // Amarillo (Medio)
+        { max: Infinity, color: "#FEBC37" } // Naranja (Rápido)
+      ]
+    });
 
     // Line Chart 24h
     new Chart(document.getElementById('line_24h').getContext('2d'), {
