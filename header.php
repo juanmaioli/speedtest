@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Medidor de Velocidad">
   <meta name="author" content="Juan Maioli">
-  <title id='titulo'>PikApp <?= $ip_client ?></title>
+  <title id='titulo'>Speedtest Web <?= $ip_client ?></title>
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="css/bootstrap.min.css?version=5.3.0">
   <!-- Bootstrap Color Extension CSS -->
@@ -20,23 +20,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin">
   <style>@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Montserrat:wght@400&family=Roboto:wght@300&display=swap'); </style>
-  <!-- Favicon for this template -->
-  <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-  <link rel="manifest" href="images/manifest.json">
+      <link rel='icon' href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏁</text></svg>'>
+
   <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
   <meta name="theme-color" content="#ffffff">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -47,10 +33,9 @@
     <div class="container">
         <h1 class="display-3 fw-bold mb-3">🏁 Speedtest Web</h1>
         <p class="lead opacity-75">Basao en fast.com·</p>
-
-                <p class="text-muted mb-0 ms-1">
-                  <i class="fa-solid fa-location-dot me-1"></i> Su IP actual: <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><?= htmlspecialchars($ip_client) ?></span>
-                </p>
+        <p class="text-muted mb-0 ms-1">
+          <i class="fa-solid fa-location-dot me-1"></i> Su IP actual: <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><?= htmlspecialchars($ip_client) ?></span>
+        </p>
 
 </div>
 </div>

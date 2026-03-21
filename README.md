@@ -1,18 +1,18 @@
-# 📊 Speedtest Web Dashboard
+# 🏁 Speedtest Web Dashboard
 
 <p align="center">
   <img src="images/speedometer.png" alt="Speedtest Logo" width="120">
 </p>
 
-Panel de control centralizado para el monitoreo de velocidad de internet desde múltiples nodos remotos. Visualiza el rendimiento de tu red en tiempo real con gráficos elegantes y estadísticas detalladas.
+Panel de control centralizado para el monitoreo de velocidad de internet desde múltiples nodos remotos. Visualiza el rendimiento de tu red en tiempo real con una interfaz moderna y optimizada.
 
 ---
 
 ## 🚀 Características Principales
 
-- 🏁 **Sección Hero Moderna:** Nuevo diseño de encabezado con degradados dinámicos en la parte superior.
+- 🏁 **Identidad Visual Renovada:** Cambio de nombre a Speedtest Web y uso de favicons SVG ligeros.
+- 🎨 **Interfaz de Alto Contraste:** Reportes detallados y estados de nodos rediseñados con esquemas de color optimizados.
 - 📉 **Medidores Radiales Dinámicos:** Gauges personalizados en `obj.php` con `gauge.js` para Ping, Download y Upload.
-- 🎨 **Interfaz de Alto Contraste:** Reportes detallados y estados de nodos rediseñados con esquemas de color optimizados (`bg-indigo`).
 - 📈 **Gráficos Históricos:** Visualización de tendencias de las últimas 24hs, mensual y anual mediante Chart.js.
 - 🏢 **Monitoreo Multinodo:** Soporta múltiples servidores o IPs registradas.
 - 🟢 **Indicadores de Estado:** Semáforo visual para saber si un nodo está reportando correctamente.
