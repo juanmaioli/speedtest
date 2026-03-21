@@ -68,8 +68,8 @@ function getSpeedtestData($conn) {
                         <input type='hidden' id='ip_test' name='ip_test' value='$st_ip'>
                         <div id='$st_ip'>
                             <button class='btn $color w-100 shadow-sm border-0 py-2'>
-                                <i class='fa-solid fa-server me-1'></i> <strong>$ip_name</strong><br>
-                                <small><i class='fa-regular fa-clock me-1'></i>Hace $diff_minutes min.</small>
+                                🖥️ <strong>$ip_name</strong><br>
+                                <small>🕒 Hace $diff_minutes min.</small>
                             </button>
                         </div>
                     </form>

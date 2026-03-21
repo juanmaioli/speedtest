@@ -10,6 +10,7 @@ Panel de control centralizado para el monitoreo de velocidad de internet desde m
 
 ## 🚀 Características Principales
 
+- ⚡ **Alto Rendimiento:** Eliminación de dependencias pesadas como FontAwesome, migrando todo el sistema iconográfico a emojis nativos.
 - 🏁 **Identidad Visual Renovada:** Cambio de nombre a Speedtest Web y uso de favicons SVG ligeros.
 - 🎨 **Interfaz de Alto Contraste:** Reportes detallados y estados de nodos rediseñados con esquemas de color optimizados.
 - 📉 **Medidores Radiales Dinámicos:** Gauges personalizados en `obj.php` con `gauge.js` para Ping, Download y Upload.

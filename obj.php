@@ -221,11 +221,11 @@ include("header.php");
           <div class="card-header border-0 text-center py-3 bg-indigo mb-4 border border-secondary-subtle">
             <div class="row">
               <div class="col-md-3 test-end">
-                <a href="index.php" class="btn btn-success shadow-sm rounded-3"><i class="fa-regular fa-arrow-left fa-fw"></i></a>
+                <a href="index.php" class="btn btn-success shadow-sm rounded-3">⬅️</a>
               </div>
               <div class="col-md-6">
                 <h1 class="text-white mb-1">Nodo: <?= $ip_name ?></h1>
-                <h4 class='text-white mb-1'><i class="fa-regular fa-clock-rotate-left me-2"></i>Último Reporte</h4>
+                <h4 class='text-white mb-1'>🕒 Último Reporte</h4>
                 <h4 class="text-white fw-bold font-monospace"><?= $last_report ?></h4>
               </div>
               <div class="col-md-3">
@@ -306,7 +306,7 @@ include("header.php");
     </div>
     <div class="row mt-3">
       <div class="col-md-1"></div>
-      <div class="col-md-10 m-1 text-center"><a href="del.php?id=<?= $ip_test ?>" class="btn btn-danger"><i class="fa-regular fa-trash-can fa-fw"></i> Borrar Estadísticas de <?= $ip_test ?></a></div>
+      <div class="col-md-10 m-1 text-center"><a href="del.php?id=<?= $ip_test ?>" class="btn btn-danger">🗑️ Borrar Estadísticas de <?= $ip_test ?></a></div>
       <div class="col-md-1"></div>
     </div>
   </div>

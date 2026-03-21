@@ -14,10 +14,10 @@
     const switchTableCard = document.querySelector('#switchTableCard')
     const switchTableCardLabel = document.querySelector('#switchTableCardLabel')
     if (switchTableCard.checked) {
-      switchTableCardLabel.innerHTML = '<i class="fa-regular fa-moon-stars fa-fw fa-2x"></i>'
+      switchTableCardLabel.innerHTML = '🌙'
       changeTheme('dark')
     } else {
-      switchTableCardLabel.innerHTML = '<i class="fa-regular fa-sun fa-fw fa-2x"></i>'
+      switchTableCardLabel.innerHTML = '☀️'
       changeTheme('light')
     }
   }

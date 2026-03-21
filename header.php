@@ -11,9 +11,6 @@
   <link rel="stylesheet" href="css/bootstrap.min.css?version=5.3.0">
   <!-- Bootstrap Color Extension CSS -->
   <link rel="stylesheet" href="css/bootstrap-color-extension.css?version=1.6.0">
-  <!-- FontAwesome CSS -->
-  <link rel="stylesheet" href="css/all.min.css?version=6.4.0">
-  <link rel="stylesheet" href="css/bootstrap-color-extension.css?version=1.6.0">
   <!-- Proyect CSS -->
   <link rel="stylesheet" href="css/style.css">
   <!-- Google fonts -->
@@ -25,7 +22,7 @@
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#ffffff">
   <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/chart.js"></script>
 </head>
 <body>
 <!-- Header Hero -->
@@ -34,7 +31,7 @@
         <h1 class="display-3 fw-bold mb-3">🏁 Speedtest Web</h1>
         <p class="lead opacity-75">Basao en fast.com·</p>
         <p class="text-muted mb-0 ms-1">
-          <i class="fa-solid fa-location-dot me-1"></i> Su IP actual: <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><?= htmlspecialchars($ip_client) ?></span>
+          📍 Su IP actual: <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><?= htmlspecialchars($ip_client) ?></span>
         </p>
 
 </div>

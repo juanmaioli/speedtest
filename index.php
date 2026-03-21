@@ -38,7 +38,7 @@ include("header.php");
             <div class="row mt-1">
               <div class="col-md-12">
                 <div class="p-1 shadow-sm rounded-4">
-                  <h3 class="text-white"><i class="fa-solid fa-network-wired me-2"></i>Estado de los Nodos</h3>
+                  <h3 class="text-white">🔌 Estado de los Nodos</h3>
                   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
                     <?= $data_last ?>
                   </div>

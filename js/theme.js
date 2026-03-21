@@ -1,7 +1,7 @@
 const storedTheme = localStorage.getItem('theme') || 'light' // Default to light if no theme is stored
-const themeIcon = {
-  dark:'<i class="fa-regular fa-moon-stars fa-fw"></i><span class="d-lg-none ms-2">Modo Claro</span>',
-  light:'<i class="fa-regular fa-sun fa-fw"></i><span class="d-lg-none ms-2">Modo Oscuro</span>'
+const themeIcons = {
+  dark:'🌙<span class="d-lg-none ms-2">Modo Claro</span>',
+  light:'☀️<span class="d-lg-none ms-2">Modo Oscuro</span>'
 }
 
 // Set initial theme and icon based on storedTheme
