@@ -10,11 +10,11 @@ Panel de control centralizado para el monitoreo de velocidad de internet desde m
 
 ## 🚀 Características Principales
 
+- 🏁 **Sección Hero Moderna:** Nuevo diseño de encabezado con degradados dinámicos en la parte superior.
 - 📉 **Medidores Radiales Dinámicos:** Gauges personalizados en `obj.php` con `gauge.js` para Ping, Download y Upload.
-- 🎨 **Interfaz de Alto Contraste:** Mejoras visuales en los reportes detallados con esquemas de color optimizados (`bg-indigo`) para una mejor legibilidad.
+- 🎨 **Interfaz de Alto Contraste:** Reportes detallados y estados de nodos rediseñados con esquemas de color optimizados (`bg-indigo`).
 - 📈 **Gráficos Históricos:** Visualización de tendencias de las últimas 24hs, mensual y anual mediante Chart.js.
 - 🏢 **Monitoreo Multinodo:** Soporta múltiples servidores o IPs registradas.
-- ⏱️ **Estadísticas de Promedio:** Tablas calculadas automáticamente para ver el rendimiento histórico.
 - 🟢 **Indicadores de Estado:** Semáforo visual para saber si un nodo está reportando correctamente.
 - 📱 **Interfaz Adaptable:** Diseño moderno basado en Bootstrap 5.3 con soporte para distintos temas.
 

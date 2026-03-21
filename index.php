@@ -34,36 +34,19 @@ include("header.php");
       <div class="col-md-1"></div>
       <div class="col-md-10">
         <div class="card border-0 shadow-sm bg-body-tertiary mb-5">
-          <div class="card-header border-0 bg-transparent pt-4">
-            <div class="row align-items-center">
-              <div class="col-md-8">
-                <h1 class='text-darkmagenta fw-bold mb-0'>
-                  <img src="images/speedometer.svg" class="me-2" width="60px" /> 
-                  Resumen de Conectividad 🌐
-                </h1>
-                <p class="text-muted mb-0 ms-1">
-                  <i class="fa-solid fa-location-dot me-1"></i> Su IP actual: <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><?= htmlspecialchars($ip_client) ?></span>
-                </p>
-              </div>
-              <div class="col-md-4 text-md-end">
-                <div class="badge bg-success-subtle text-success p-2 border border-success-subtle">
-                  <i class="fa-solid fa-circle-check me-1"></i> Sistema Operativo
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card-body px-4">
-            <div class="row mt-4">
+            <div class="card-header border-0 text-center py-3 bg-indigo border border-seco">
+            <div class="row mt-1">
               <div class="col-md-12">
-                <div class="bg-body border-0 p-4 shadow-sm rounded-4 mb-4">
-                  <h5 class="text-secondary mb-3"><i class="fa-solid fa-network-wired me-2"></i>Estado de los Nodos</h5>
+                <div class="p-1 shadow-sm rounded-4">
+                  <h3 class="text-white"><i class="fa-solid fa-network-wired me-2"></i>Estado de los Nodos</h3>
                   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
                     <?= $data_last ?>
                   </div>
                 </div>
               </div>
             </div>
-
+            </div>
+          <div class="card-body px-4">
             <div class="row g-4">
               <div class="col-lg-8">
                 <div class="bg-body p-3 shadow-sm rounded-4 border border-secondary-subtle h-100">

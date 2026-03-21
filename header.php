@@ -42,6 +42,18 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<!-- Header Hero -->
+<div class="hero-section text-center text-white shadow">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-3">🏁 Speedtest Web</h1>
+        <p class="lead opacity-75">Basao en fast.com·</p>
+
+                <p class="text-muted mb-0 ms-1">
+                  <i class="fa-solid fa-location-dot me-1"></i> Su IP actual: <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><?= htmlspecialchars($ip_client) ?></span>
+                </p>
+
+</div>
+</div>
   <div class="position-fixed top-0 end-0 p-3" style="z-index: 1000;">
     <button class="btn btn-outline-secondary bg-body shadow-sm" id="btn-theme" onclick="toggleTheme()"></button>
   </div>
