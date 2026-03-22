@@ -18,7 +18,7 @@ def run_speed_test():
         upload_speed = data.get('uploadSpeed')
         latency = data.get('latency')
         buffer_bloat = data.get('bufferBloat')
-        base_url = "http://pikapp.com.ar/speedtest/raw.php?id="
+        base_url = "https://webserver.docker:5443/speedtest/raw.php?id="
         url = f"{base_url}{latency}-{download_speed}-{upload_speed}-casa_fibra"
         # 📊 Mostrar los resultados asignados
         # print(f"📉 URL: {url}")

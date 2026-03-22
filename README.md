@@ -1,23 +1,20 @@
-# 🏁 Speedtest Web Dashboard
+# 📊 Speedtest Web Dashboard
 
 <p align="center">
   <img src="images/speedometer.png" alt="Speedtest Logo" width="120">
 </p>
 
-Panel de control centralizado para el monitoreo de velocidad de internet desde múltiples nodos remotos. Visualiza el rendimiento de tu red en tiempo real con una interfaz moderna y optimizada.
+Panel de control centralizado para el monitoreo de velocidad de internet desde múltiples nodos remotos. Visualiza el rendimiento de tu red en tiempo real con gráficos elegantes y estadísticas detalladas.
 
 ---
 
 ## 🚀 Características Principales
 
-- ⚡ **Alto Rendimiento:** Eliminación de dependencias pesadas como FontAwesome, migrando todo el sistema iconográfico a emojis nativos.
-- 🏁 **Identidad Visual Renovada:** Cambio de nombre a Speedtest Web y uso de favicons SVG ligeros.
-- 🎨 **Interfaz de Alto Contraste:** Reportes detallados y estados de nodos rediseñados con esquemas de color optimizados.
-- 📉 **Medidores Radiales Dinámicos:** Gauges personalizados en `obj.php` con `gauge.js` para Ping, Download y Upload.
-- 📈 **Gráficos Históricos:** Visualización de tendencias de las últimas 24hs, mensual y anual mediante Chart.js.
+- 📈 **Gráficos en Tiempo Real:** Visualización dinámica de Download, Upload y Ping mediante Chart.js.
 - 🏢 **Monitoreo Multinodo:** Soporta múltiples servidores o IPs registradas.
+- ⏱️ **Estadísticas de Promedio:** Tablas calculadas automáticamente para ver el rendimiento histórico.
 - 🟢 **Indicadores de Estado:** Semáforo visual para saber si un nodo está reportando correctamente.
-- 📱 **Interfaz Adaptable:** Diseño moderno basado en Bootstrap 5.3 con soporte para distintos temas.
+- 📱 **Interfaz Adaptable:** Diseño moderno basado en Bootstrap 5.3 con soporte para distintos temas y modo oscuro.
 
 ---
 
@@ -29,10 +26,11 @@ El sistema se divide en dos partes:
     - Procesa los reportes mediante `raw.php`.
     - Almacena los datos en MySQL/MariaDB.
     - Renderiza el Dashboard principal (`index.php`).
+    - Compatible con entornos locales de desarrollo (Docker/Vagrant).
 
 2.  **Agentes de Monitoreo (Nodos):**
     - Ejecutan pruebas de velocidad usando `fast-cli`.
-    - Reportan los resultados automáticamente al servidor central.
+    - Reportan los resultados automáticamente al servidor central (soporta HTTPS y puertos personalizados).
 
 ---
 
@@ -46,18 +44,15 @@ El sistema se divide en dos partes:
 ### 2. Instalación del Servidor
 1. Clona este repositorio.
 2. Crea una base de datos e importa las tablas necesarias.
-3. Renombra `config_example.php` a `config.php` y completa tus credenciales:
-   ```php
-   $db_server = "localhost";
-   $db_user   = "tu_usuario";
-   $db_pass   = "tu_contraseña";
-   $db_name   = "speedtest_db";
-   ```
+3. Renombra `config_example.php` a `config.php` y completa tus credenciales.
 
 ### 3. Configuración del Cliente
-1. Copia el contenido de `Scripts/` a tu servidor cliente.
-2. Configura el script `speedtest.sh` con la URL de tu servidor central.
-3. Agrega una tarea al CRON para automatizar los reportes:
+1. Ajustá el script `Scripts/client.py` con la `base_url` de tu servidor:
+   ```python
+   base_url = "https://tu-servidor.com/speedtest/raw.php?id="
+   ```
+2. Configurá el script `speedtest.sh` con las rutas correctas.
+3. Agregá una tarea al CRON para automatizar los reportes:
    ```bash
    */15 * * * * /ruta/a/Scripts/speedtest.sh
    ```
@@ -72,13 +67,13 @@ El sistema se divide en dos partes:
 | `data_logic.php` | Lógica de negocio y consultas SQL optimizadas. |
 | `raw.php` | API para recepción de datos de los nodos. |
 | `Scripts/` | Scripts de Python y Bash para ejecución en clientes. |
-| `css/` & `js/` | Activos estáticos para el frontend. |
+| `css/` & `js/` | Activos estáticos para el frontend (Bootstrap 5.3 + Chart.js). |
 
 ---
 
 ## 👨‍💻 Contribuciones
 
-Este proyecto es mantenido por **Juan Gabriel Maioli**. Si encuentras errores o quieres proponer mejoras, ¡siéntete libre de abrir un Issue o Pull Request!
+Este proyecto es mantenido por **Juan Gabriel Maioli**. Si encontrás errores o querés proponer mejoras, ¡sentite libre de abrir un Issue o Pull Request!
 
 ---
 
